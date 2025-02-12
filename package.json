@@ -1,9 +1,8 @@
 {
-  "name": "git-todo",
+  "name": "commit-todo",
   "version": "0.0.0",
-  "description": "",
-  "keywords": [],
-  "author": "",
+  "description": "TODO-Driven Git Workflow - Define your intentions before you code",
+  "keywords": ["git", "todo", "commit", "git-todo", "todo-driven", "todo-workflow", "commit-todo", "todo-commit"],
   "license": "MIT",
   "files": ["dist"],
   "type": "module",
