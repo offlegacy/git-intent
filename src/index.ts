@@ -3,6 +3,8 @@
 import { Command } from 'commander';
 import { add } from './commands/add';
 import { done } from './commands/done';
+import { list } from './commands/list';
+import { remove } from './commands/remove';
 import { start } from './commands/start';
 import { getPackageInfo } from './utils/get-package-info';
 
@@ -14,10 +16,10 @@ async function main() {
 
   const program = new Command()
     .name('git-todo')
-    .description('TODO-Driven Git Workflow')
+    .description('Commit-Driven Git Workflow')
     .version(packageInfo.version ?? '1.0.0', '-v, --version');
 
-  program.addCommand(add).addCommand(start).addCommand(done);
+  program.addCommand(add).addCommand(start).addCommand(done).addCommand(remove).addCommand(list);
 
   program.parse();
 }
