@@ -1,8 +1,8 @@
 import path from 'node:path';
 import { execa } from 'execa';
 import fs from 'fs-extra';
-import git from './git.js';
-import { checkIsRepo } from './git.js';
+import { getPackageInfo } from './get-package-info.js';
+import git, { checkIsRepo } from './git.js';
 
 export interface IntentionalCommit {
   id: string;
@@ -13,6 +13,11 @@ export interface IntentionalCommit {
     startedAt?: string;
     branch?: string;
   };
+}
+
+interface StorageData {
+  version: string;
+  commits: IntentionalCommit[];
 }
 
 const REFS_PREFIX = 'refs/intentional-commits';
@@ -26,8 +31,17 @@ async function ensureCommitsDir(): Promise<void> {
   try {
     await fs.access(COMMITS_FILE);
   } catch {
-    await fs.writeJSON(COMMITS_FILE, []);
+    const initialData: StorageData = {
+      version: getPackageInfo().version,
+      commits: [],
+    };
+    await fs.writeJSON(COMMITS_FILE, initialData);
   }
+}
+
+// NOTE: Migrate old data
+function migrateData(data: any): StorageData {
+  return data;
 }
 
 export async function loadCommits(): Promise<IntentionalCommit[]> {
@@ -36,14 +50,20 @@ export async function loadCommits(): Promise<IntentionalCommit[]> {
 
   try {
     const result = await git.show(`${REFS_PREFIX}/commits:${STORAGE_FILE}`);
-    return JSON.parse(result);
+    const data = migrateData(JSON.parse(result));
+    return data.commits;
   } catch {
-    return fs.readJSON(COMMITS_FILE);
+    const data = migrateData(await fs.readJSON(COMMITS_FILE));
+    return data.commits;
   }
 }
 
 export async function saveCommits(commits: IntentionalCommit[]): Promise<void> {
-  const content = JSON.stringify(commits, null, 2);
+  const data: StorageData = {
+    version: getPackageInfo().version,
+    commits,
+  };
+  const content = JSON.stringify(data, null, 2);
 
   const { stdout: hash } = await execa('git', ['hash-object', '-w', '--stdin'], { input: content });
   const treeContent = `100644 blob ${hash.trim()}\t${STORAGE_FILE}\n`;
@@ -51,7 +71,7 @@ export async function saveCommits(commits: IntentionalCommit[]): Promise<void> {
   const { stdout: commitHash } = await execa('git', ['commit-tree', treeHash.trim(), '-m', 'Update intent commits']);
 
   await git.raw(['update-ref', `${REFS_PREFIX}/commits`, commitHash.trim()]);
-  await fs.writeJSON(COMMITS_FILE, commits, { spaces: 2 });
+  await fs.writeJSON(COMMITS_FILE, data, { spaces: 2 });
 }
 
 export async function initializeRefs(): Promise<void> {
