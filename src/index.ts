@@ -1,29 +1,23 @@
 #!/usr/bin/env node
-
 import { Command } from 'commander';
-import { create, finish, list, remove, start, status } from './commands';
-import { getPackageInfo } from './utils/get-package-info';
+import { create, finish, list, remove, start, status } from './commands/index.js';
+import { initializeRefs } from './utils/storage.js';
 
-process.on('SIGINT', () => process.exit(0));
-process.on('SIGTERM', () => process.exit(0));
+(async () => {
+  const program = new Command();
 
-async function main() {
-  const packageInfo = await getPackageInfo();
+  await initializeRefs();
 
-  new Command()
-    .name('intent')
-    .description(packageInfo.description)
-    .version(packageInfo.version, '-v, --version')
+  program
+    .name('gintent')
+    .description('Git workflow tool for intentional commits')
+    .version('0.0.0')
     .addCommand(create)
-    .addCommand(start)
-    .addCommand(finish)
     .addCommand(list)
-    .addCommand(status)
     .addCommand(remove)
-    .parse();
-}
+    .addCommand(start)
+    .addCommand(status)
+    .addCommand(finish);
 
-main().catch((error) => {
-  console.error('Failed to start CLI:', error);
-  process.exit(1);
-});
+  program.parse();
+})();

@@ -1,56 +1,32 @@
-import { getCreatedCommits, getCurrentBranch, getInProgressCommit, git } from '@/lib/git';
+import { getStatus } from '@/utils/git.js';
+import { loadCommits } from '@/utils/storage.js';
 import chalk from 'chalk';
 import { Command } from 'commander';
-import ora from 'ora';
 
-export const status = new Command('status')
-  .description('Show current branch status and intentions')
+const status = new Command()
+  .command('status')
+  .description('Show current intentional commit status')
   .action(async () => {
-    const spinner = ora('Loading status...').start();
+    const commits = await loadCommits();
+    const currentCommit = commits.find((c) => c.status === 'in_progress');
 
-    try {
-      const currentBranch = await getCurrentBranch();
-      const status = await git.status();
+    if (!currentCommit) {
+      console.log('No intent in progress');
+      return;
+    }
 
-      const inProgressCommit = await getInProgressCommit(currentBranch);
-      const createdCommits = await getCreatedCommits();
+    console.log(chalk.blue('\nCurrently working on:'));
+    console.log(`ID: ${chalk.blue(currentCommit.id)}`);
+    console.log(`Message: ${currentCommit.message}`);
+    if (currentCommit.metadata.startedAt) {
+      console.log(`Started: ${new Date(currentCommit.metadata.startedAt).toLocaleString()}`);
+    }
 
-      spinner.stop();
-
-      console.log(chalk.bold(`\nOn branch ${chalk.green(currentBranch)}`));
-
-      // Display changes
-      if (status.files.length > 0) {
-        console.log(chalk.bold('\nChanges:'));
-        for (const file of status.files) {
-          const color = file.working_dir === 'M' ? 'blue' : 'red';
-          console.log(chalk[color](`  ${file.path}`));
-        }
-      }
-
-      if (inProgressCommit?.status) {
-        console.log(chalk.bold('\nIn Progress:'));
-        console.log(chalk.yellow(`  ${inProgressCommit.message} (${inProgressCommit.id})`));
-
-        if (inProgressCommit.metadata.startedAt) {
-          console.log(chalk.gray(`  Started: ${new Date(inProgressCommit.metadata.startedAt).toLocaleString()}`));
-        }
-      }
-
-      if (createdCommits.length > 0) {
-        console.log(chalk.bold('\nPending Intentions:'));
-        for (const commit of createdCommits) {
-          console.log(chalk.blue(`  ${commit.message} (${commit.id})`));
-        }
-      }
-
-      if (!inProgressCommit && createdCommits.length === 0) {
-        console.log(chalk.gray('\nNo intentions in progress or pending.'));
-      }
-    } catch (error) {
-      spinner.stop();
-      console.error(chalk.red('Failed to get status'));
-      console.error(error);
-      process.exit(1);
+    const gitStatus = await getStatus();
+    if (gitStatus) {
+      console.log('\nGit Status:');
+      console.log(gitStatus);
     }
   });
+
+export default status;

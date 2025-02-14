@@ -1,109 +1,81 @@
-# commit-todo
+# git-intent
 
-A CLI tool for TODO-Driven Git Workflow - Define your intentions before you code.
+Git workflow tool for intentional commits - Define your commit intentions before coding to write more meaningful and purposeful code.
 
-## Overview
+## Installation & Usage
 
-commit-todo introduces a new paradigm in Git workflow that encourages developers to define their intentions before coding. Similar to how Test-Driven Development (TDD) promotes writing tests first, TODO-Driven Git Workflow suggests planning your commits beforehand.
-
-By managing your tasks as TODOs that naturally become your commits, you create more focused and atomic changes in your codebase.
-
-## Installation
+You can use this tool without installation via `npx`:
 
 ```bash
-npx commit-todo <command>
+npx gintent [command]
 ```
 
-To use as a git command:
+Or install it globally:
 
 ```bash
-git config --global alias.todo '!npx commit-todo'
+npm install -g gintent
 ```
 
-## Basic Usage
+### Git Integration
 
-Here's a typical workflow example:
-
-1. **Create a Task**
+You can also use it as a git command by adding an alias to your git config:
 
 ```bash
-$ npx commit-todo add "feat: implement user profile"
-✓ Task created successfully
-
-Title: feat: implement user profile
-ID: dK9m2nP8
+git config --global alias.intent '!npx gintent'
 ```
 
-2. **View Tasks**
+Then you can use it like this:
 
 ```bash
-$ npx commit-todo list
-┌──────────┬─────────────┬─────────────────────────────┐
-│ ID       │ Status      │ Title                       │
-├──────────┼─────────────┼─────────────────────────────┤
-│ dK9m2nP8 │ TODO        │ feat: implement user profile│
-│ xQ7vR4nM │ IN-PROGRESS │ feat: add activity history  │
-│ wL2kJ9pY │ DONE        │ feat: create settings panel │
-└──────────┴─────────────┴─────────────────────────────┘
-```
-
-3. **Start a Task**
-
-```bash
-$ npx commit-todo start dK9m2nP8
-✓ Task started successfully
-
-Title: feat: implement user profile
-```
-
-4. **Complete a Task**
-
-```bash
-$ npx commit-todo done dK9m2nP8
-✓ Task completed successfully
-
-Title: feat: implement user profile
-Commit: feat: implement user profile
+git intent [command]
 ```
 
 ## Commands
 
-| Command | Description |
-|---------|-------------|
-| `add <title>` | Create a new task with the specified title |
-| `list` | Display all tasks in a table format |
-| `start <id>` | Mark a task as in progress |
-| `done <id>` | Complete a task and create a commit |
-| `remove <id>` | Delete a task |
-| `help` | Show command usage information |
+### Create a new intent
 
-## Features
+```bash
+npx gintent "implement login form"
+# or
+npx gintent  # will prompt for commit message
+```
 
-- **Task-Based Workflow**: Manage your work as discrete, focused tasks
-- **Git Integration**: Tasks automatically become commit messages
-- **Status Tracking**: Monitor task progress (TODO → IN-PROGRESS → DONE)
-- **Simple Interface**: Intuitive CLI commands for task management
+### List all intents
 
-## Contributing
+```bash
+npx gintent list
+```
 
-We welcome contribution from everyone in the community. Read below for detailed contribution guide.
+### Start working on an intent
 
-[CONTRIBUTING.md](https://github.com/offlegacy/commit-todo/blob/main/CONTRIBUTING.md)
+```bash
+npx gintent start [id]  # id is optional, will prompt if not provided
+```
 
-### Contributors
+### Check current status
 
-[![contributors](https://contrib.rocks/image?repo=offlegacy/commit-todo)](https://github.com/offlegacy/commit-todo/contributors)
+```bash
+npx gintent status
+```
+
+### Finish current intent
+
+```bash
+npx gintent finish
+```
+
+## How it works
+
+1. **Define your intent**: Before you start coding, define what you're going to commit.
+2. **Start working**: Begin implementing your intent.
+3. **Finish with purpose**: Complete your work with a clear, pre-defined commit message.
+
+This workflow helps you:
+
+- Write more focused and purposeful code
+- Create cleaner, more meaningful commits
+- Stay aligned with your original intentions
 
 ## License
 
-See [LICENSE](LICENSE) for more information.
-
-MIT @ [OffLegacy](https://github.com/OffLegacy)
-
-## About OffLegacy
-
-<img align="left" height="88" src="https://static.offlegacy.org/logo.svg"/>
-
-**Open-source Development Team in South Korea 🇰🇷**
-
-We believe that open source is the fastest way to change the world with software. Through open source, we aim to contribute to building a better technological ecosystem.
+MIT

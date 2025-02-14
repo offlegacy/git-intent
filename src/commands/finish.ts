@@ -1,44 +1,44 @@
-import { finishIntentionalCommit, getInProgressCommit, hasStagedFiles } from '@/lib/git';
+import { createCommit, hasStagedFiles } from '@/utils/git.js';
+import { loadCommits, saveCommits } from '@/utils/storage.js';
 import chalk from 'chalk';
 import { Command } from 'commander';
-import ora from 'ora';
 
-export const finish = new Command('finish')
-  .description('Complete an intentional commit')
-  .argument('[id]', 'Commit ID')
-  .action(async (id?: string) => {
-    const spinner = ora('Completing intentional commit...').start();
+const finish = new Command()
+  .command('finish')
+  .description('Finish current intentional commit')
+  .action(async () => {
+    const commits = await loadCommits();
+    const currentCommit = commits.find((c) => c.status === 'in_progress');
 
-    try {
-      const hasChanged = await hasStagedFiles();
-      if (!hasChanged) {
-        spinner.stop();
-        console.error(chalk.red('No changes to commit. Make some changes first.'));
-        process.exit(1);
+    if (!currentCommit) {
+      console.error('No intent in progress');
+      return;
+    }
+
+    if (!(await hasStagedFiles())) {
+      console.error('No staged changes');
+      return;
+    }
+
+    await createCommit(currentCommit.message);
+
+    const updatedCommits = commits.filter((c) => c.id !== currentCommit.id);
+    await saveCommits(updatedCommits);
+
+    console.log(chalk.green('✓ Completed:'));
+    console.log(`ID: ${chalk.blue(currentCommit.id)}`);
+    console.log(`Message: ${currentCommit.message}`);
+
+    const nextCommits = updatedCommits.filter((c) => c.status === 'created');
+    if (nextCommits.length > 0) {
+      console.log('\nNext intents:');
+      let index = 1;
+      for (const commit of nextCommits) {
+        console.log(`${index}. ${commit.message} (${commit.id})`);
+        index++;
       }
-
-      let commitId = id;
-
-      if (!commitId) {
-        const inProgressCommit = await getInProgressCommit();
-
-        if (!inProgressCommit) {
-          spinner.stop();
-          console.error(chalk.red('No commit in progress on current branch. Start one first with `intent start`'));
-          process.exit(1);
-        }
-
-        commitId = inProgressCommit.id;
-      }
-
-      const commit = await finishIntentionalCommit(commitId);
-      spinner.succeed(chalk.green('Intentional commit completed successfully'));
-      console.log(chalk.blue(`\nCompleted: ${chalk.bold(commit.message)}`));
-      console.log(chalk.gray(`Commit Hash: ${commit.metadata.commitHash}`));
-    } catch (error) {
-      spinner.stop();
-      console.error(chalk.red('Failed to complete intentional commit'));
-      console.error(error);
-      process.exit(1);
+      console.log('\nRun "gintent start <id>" to start working on next intent');
     }
   });
+
+export default finish;
