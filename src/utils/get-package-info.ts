@@ -2,8 +2,8 @@ import path from 'node:path';
 import fs from 'fs-extra';
 import type { PackageJson } from 'type-fest';
 
-export function getPackageInfo() {
+export function getPackageInfo(): PackageJson & { version: string; description: string } {
   const packageJsonPath = path.join('package.json');
 
-  return fs.readJSONSync(packageJsonPath) as PackageJson;
+  return fs.readJSONSync(packageJsonPath);
 }

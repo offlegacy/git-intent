@@ -1,8 +1,17 @@
 {
-  "name": "commit-todo",
+  "name": "git-intent",
   "version": "0.0.0",
-  "description": "TODO-Driven Git Workflow - Define your intentions before you code",
-  "keywords": ["git", "todo", "commit", "git-todo", "todo-driven", "todo-workflow", "commit-todo", "todo-commit"],
+  "description": "Git workflow tool for intentional commits - Define your commit intentions before coding to write more meaningful and purposeful code",
+  "keywords": [
+    "git",
+    "intentional-commits",
+    "commit",
+    "git-workflow",
+    "meaningful-commits",
+    "commit-first",
+    "git-todo",
+    "todo-driven"
+  ],
   "license": "MIT",
   "files": ["dist"],
   "type": "module",
@@ -17,9 +26,10 @@
   },
   "dependencies": {
     "chalk": "^5.4.1",
-    "cli-table3": "^0.6.5",
     "commander": "^13.1.0",
+    "execa": "^9.5.2",
     "fs-extra": "^11.3.0",
+    "inquirer": "^12.4.1",
     "nanoid": "^5.0.9",
     "ora": "^8.2.0",
     "simple-git": "^3.27.0"
@@ -27,7 +37,9 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@types/fs-extra": "^11.0.4",
+    "@types/inquirer": "^9.0.7",
     "@types/node": "^22.13.1",
+    "@types/nodegit": "^0.28.7",
     "tsup": "^8.3.6",
     "type-fest": "^4.34.1",
     "typescript": "^5.7.3",

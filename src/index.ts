@@ -2,10 +2,11 @@
 
 import { Command } from 'commander';
 import { add } from './commands/add';
-import { done } from './commands/done';
+import { edit } from './commands/edit';
+import { finish } from './commands/finish';
 import { list } from './commands/list';
 import { remove } from './commands/remove';
-import { start } from './commands/start';
+import { show } from './commands/show';
 import { getPackageInfo } from './utils/get-package-info';
 
 process.on('SIGINT', () => process.exit(0));
@@ -14,14 +15,17 @@ process.on('SIGTERM', () => process.exit(0));
 async function main() {
   const packageInfo = getPackageInfo();
 
-  const program = new Command()
-    .name('git-todo')
-    .description('Commit-Driven Git Workflow')
-    .version(packageInfo.version ?? '1.0.0', '-v, --version');
-
-  program.addCommand(add).addCommand(start).addCommand(done).addCommand(remove).addCommand(list);
-
-  program.parse();
+  new Command()
+    .name('intent')
+    .description(packageInfo.description)
+    .version(packageInfo.version, '-v, --version')
+    .addCommand(add)
+    .addCommand(show)
+    .addCommand(edit)
+    .addCommand(remove)
+    .addCommand(list)
+    .addCommand(finish)
+    .parse();
 }
 
 main();

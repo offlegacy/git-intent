@@ -1,42 +1,36 @@
+import { addIntentionalCommit, git, hasChangedFiles, initializeRefs } from '@/lib/git';
 import chalk from 'chalk';
 import { Command } from 'commander';
-import { nanoid } from 'nanoid';
 import ora from 'ora';
-import simpleGit from 'simple-git';
-import { TaskSchema } from '../types';
 
-const git = simpleGit();
-
-export const add = new Command()
-  .name('add')
-  .description('Add a new task')
-  .argument('<title>', 'Task title')
-  .action(async (title: string) => {
-    const spinner = ora('Checking git repository...').start();
+export const add = new Command('add')
+  .description('Add a new intentional commit')
+  .argument('<message>', 'Commit message')
+  .action(async (message) => {
+    const spinner = ora('Adding intentional commit...').start();
 
     try {
-      const isGitRepo = await git.checkIsRepo();
-      if (!isGitRepo) {
-        spinner.fail(chalk.red('Current directory is not a git repository'));
+      const isRepo = await git.checkIsRepo();
+      if (!isRepo) {
+        spinner.stop();
+        console.error(chalk.red('Current directory is not a git repository'));
         process.exit(1);
       }
 
-      spinner.text = 'Creating new task...';
-      const taskId = nanoid(8);
-      const task = TaskSchema.parse({
-        id: taskId,
-        title,
-        status: 'TODO' as const,
-        createdAt: new Date().toISOString(),
-      });
+      await initializeRefs();
 
-      await git.addConfig(`todo.${taskId}`, JSON.stringify(task), false, 'local');
+      const hasChanged = await hasChangedFiles();
+      if (hasChanged) {
+        spinner.stop();
+        console.error(chalk.red('You have uncommitted changes. Please commit or stash them first.'));
+        process.exit(1);
+      }
 
-      spinner.succeed(chalk.green('Task created successfully'));
-      console.log(`\n${chalk.cyan('Title:')} ${title}`);
-      console.log(`${chalk.cyan('ID:')} ${taskId}`);
+      await addIntentionalCommit(message);
+      spinner.succeed(chalk.green('Intentional commit added successfully'));
     } catch (error) {
-      spinner.fail(chalk.red('Failed to add task:'));
+      spinner.stop();
+      console.error(chalk.red('Failed to add intentional commit'));
       console.error(error);
       process.exit(1);
     }
