@@ -1,12 +1,12 @@
 import { addIntentionalCommit, git, hasChangedFiles, initializeRefs } from '@/lib/git';
 import chalk from 'chalk';
 import { Command } from 'commander';
+import { edit } from 'external-editor';
 import ora from 'ora';
-
 export const add = new Command('add')
   .description('Add a new intentional commit')
-  .argument('<message>', 'Commit message')
-  .action(async (message) => {
+  .argument('[message]', 'Commit message')
+  .action(async (message?: string) => {
     const spinner = ora('Adding intentional commit...').start();
 
     try {
@@ -26,7 +26,25 @@ export const add = new Command('add')
         process.exit(1);
       }
 
-      await addIntentionalCommit(message);
+      let commitMessage = message;
+      if (!commitMessage) {
+        spinner.stop();
+        try {
+          commitMessage = edit('');
+
+          if (!commitMessage) {
+            console.error(chalk.red('Aborting commit due to empty commit message'));
+            process.exit(1);
+          }
+        } catch (err) {
+          console.error(chalk.red('Failed to open editor'));
+          process.exit(1);
+        }
+
+        spinner.start();
+      }
+
+      await addIntentionalCommit(commitMessage);
       spinner.succeed(chalk.green('Intentional commit added successfully'));
     } catch (error) {
       spinner.stop();

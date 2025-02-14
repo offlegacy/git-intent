@@ -1,4 +1,5 @@
 import { execa } from 'execa';
+import { nanoid } from 'nanoid';
 import simpleGit from 'simple-git';
 
 export const git = simpleGit();
@@ -106,7 +107,7 @@ export async function addIntentionalCommit(message: string, branchName?: string)
   const commits = await loadCommits(branch);
 
   commits.push({
-    id: Math.random().toString(36).substring(2, 15),
+    id: nanoid(8),
     message,
     createdAt: new Date().toISOString(),
   });
