@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
-import { create, finish, list, remove, start, status } from './commands/index.js';
+import { cancel, create, finish, list, remove, start, status } from './commands/index.js';
 import { initializeRefs } from './utils/storage.js';
 
 (async () => {
@@ -17,7 +17,8 @@ import { initializeRefs } from './utils/storage.js';
     .addCommand(remove)
     .addCommand(start)
     .addCommand(status)
-    .addCommand(finish);
+    .addCommand(finish)
+    .addCommand(cancel);
 
   program.parse();
 })();
