@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
 import { cancel, create, finish, list, remove, start, status } from './commands/index.js';
+import { getPackageInfo } from './utils/get-package-info.js';
 import { initializeRefs } from './utils/storage.js';
 
 (async () => {
@@ -8,10 +9,12 @@ import { initializeRefs } from './utils/storage.js';
 
   await initializeRefs();
 
+  const packageInfo = getPackageInfo();
+
   program
     .name('gintent')
-    .description('Git workflow tool for intentional commits')
-    .version('0.0.0')
+    .description(packageInfo.description)
+    .version(packageInfo.version)
     .addCommand(create)
     .addCommand(list)
     .addCommand(remove)
