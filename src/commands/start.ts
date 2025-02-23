@@ -1,5 +1,5 @@
-import { getCurrentBranch } from '@/utils/git.js';
-import { loadCommits, saveCommits } from '@/utils/storage.js';
+import { getCurrentBranch } from '@/utils/git';
+import { storage } from '@/utils/storage.js';
 import chalk from 'chalk';
 import { Command } from 'commander';
 import prompts from 'prompts';
@@ -9,7 +9,7 @@ const start = new Command()
   .argument('[id]', 'intent id')
   .description('Start working on an intentional commit')
   .action(async (id?: string) => {
-    const commits = await loadCommits();
+    const commits = await storage.loadCommits();
 
     let selectedId = id;
     if (!selectedId) {
@@ -54,7 +54,7 @@ const start = new Command()
     targetCommit.metadata.startedAt = new Date().toISOString();
     targetCommit.metadata.branch = currentBranch;
 
-    await saveCommits(commits);
+    await storage.saveCommits(commits);
 
     console.log(chalk.green('✓ Started working on:'));
     console.log(`ID: ${chalk.blue(targetCommit.id)}`);

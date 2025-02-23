@@ -1,4 +1,4 @@
-import { type IntentionalCommit, loadCommits, saveCommits } from '@/utils/storage.js';
+import { type IntentionalCommit, storage } from '@/utils/storage.js';
 import chalk from 'chalk';
 import { Command } from 'commander';
 import prompts from 'prompts';
@@ -7,7 +7,7 @@ const cancel = new Command()
   .command('cancel')
   .description('Cancel current in-progress intent')
   .action(async () => {
-    const commits = await loadCommits();
+    const commits = await storage.loadCommits();
     const currentCommit = commits.find((c) => c.status === 'in_progress');
 
     if (!currentCommit) {
@@ -40,7 +40,7 @@ const cancel = new Command()
       console.log(chalk.green('✓ Intent deleted:'));
     }
 
-    await saveCommits(updatedCommits);
+    await storage.saveCommits(updatedCommits);
 
     console.log(`ID: ${chalk.blue(currentCommit.id)}`);
     console.log(`Message: ${currentCommit.message}`);

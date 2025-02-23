@@ -1,4 +1,4 @@
-import { loadCommits } from '@/utils/storage.js';
+import { storage } from '@/utils/storage.js';
 import chalk from 'chalk';
 import { Command } from 'commander';
 
@@ -6,7 +6,7 @@ const list = new Command()
   .command('list')
   .description('List all intentional commits')
   .action(async () => {
-    const commits = await loadCommits();
+    const commits = await storage.loadCommits();
 
     if (commits.length === 0) {
       console.log('No intents found');

@@ -1,4 +1,4 @@
-import { loadCommits, saveCommits } from '@/utils/storage.js';
+import { storage } from '@/utils/storage.js';
 import chalk from 'chalk';
 import { Command } from 'commander';
 import prompts from 'prompts';
@@ -8,7 +8,7 @@ const remove = new Command()
   .description('Remove an intentional commit')
   .argument('[id]', 'Intent id')
   .action(async (id?: string) => {
-    const commits = await loadCommits();
+    const commits = await storage.loadCommits();
     const createdCommits = commits.filter((c) => c.status === 'created');
 
     let selectedId = id;
@@ -49,7 +49,7 @@ const remove = new Command()
     }
 
     const updatedCommits = commits.filter((c) => c.id !== selectedId);
-    await saveCommits(updatedCommits);
+    await storage.saveCommits(updatedCommits);
 
     console.log(chalk.green('✓ Intent removed:'));
     console.log(`ID: ${chalk.blue(targetCommit.id)}`);

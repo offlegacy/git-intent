@@ -2,12 +2,12 @@
 import { Command } from 'commander';
 import { cancel, create, finish, list, remove, start, status } from './commands/index.js';
 import { getPackageInfo } from './utils/get-package-info.js';
-import { initializeRefs } from './utils/storage.js';
+import { storage } from './utils/storage.js';
 
 (async () => {
   const program = new Command();
 
-  await initializeRefs();
+  await storage.initializeRefs();
 
   const packageInfo = getPackageInfo();
 

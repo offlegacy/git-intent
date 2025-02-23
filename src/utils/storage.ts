@@ -20,81 +20,124 @@ interface StorageData {
   commits: IntentionalCommit[];
 }
 
-const REFS_PREFIX = 'refs/intentional-commits';
-const STORAGE_FILE = 'intents.json';
-const GIT_DIR = '.git';
-const COMMITS_DIR = path.join(GIT_DIR, 'intentional-commits');
-const COMMITS_FILE = path.join(COMMITS_DIR, 'commits.json');
+export class GitIntentionalCommitStorage {
+  private static instance: GitIntentionalCommitStorage;
+  private readonly REFS_PREFIX = 'refs/intentional-commits';
+  private readonly STORAGE_FILE = 'intents.json';
+  private readonly GIT_DIR = '.git';
+  private gitRoot: string | undefined;
 
-const getInitialData = (): StorageData => ({
-  version: getPackageInfo().version,
-  commits: [],
-});
+  private constructor() {}
 
-async function ensureCommitsDir(): Promise<void> {
-  await fs.ensureDir(COMMITS_DIR);
-  try {
-    await fs.access(COMMITS_FILE);
-  } catch {
-    await fs.writeJSON(COMMITS_FILE, getInitialData());
+  static getInstance(): GitIntentionalCommitStorage {
+    if (!GitIntentionalCommitStorage.instance) {
+      GitIntentionalCommitStorage.instance = new GitIntentionalCommitStorage();
+    }
+    return GitIntentionalCommitStorage.instance;
+  }
+
+  setGitRoot(root: string): void {
+    this.gitRoot = root;
+  }
+
+  async getGitRoot(): Promise<string> {
+    if (this.gitRoot) return this.gitRoot;
+    return process.cwd();
+  }
+
+  private async getCommitsDir(): Promise<string> {
+    const root = await this.getGitRoot();
+    return path.join(root, this.GIT_DIR, 'intentional-commits');
+  }
+
+  private async getCommitsFile(): Promise<string> {
+    const commitsDir = await this.getCommitsDir();
+    return path.join(commitsDir, 'commits.json');
+  }
+
+  private getInitialData(): StorageData {
+    return {
+      version: getPackageInfo().version,
+      commits: [],
+    };
+  }
+
+  private async ensureCommitsDir(): Promise<void> {
+    const commitsDir = await this.getCommitsDir();
+    const commitsFile = await this.getCommitsFile();
+
+    await fs.ensureDir(commitsDir);
+    try {
+      await fs.access(commitsFile);
+    } catch {
+      await fs.writeJSON(commitsFile, this.getInitialData());
+    }
+  }
+
+  // NOTE: Migrate old data
+  private migrateData(data: any): StorageData {
+    return data;
+  }
+
+  async loadCommits(): Promise<IntentionalCommit[]> {
+    const root = await this.getGitRoot();
+    await checkIsRepo(root);
+    await this.ensureCommitsDir();
+
+    try {
+      const result = await git.cwd(root).show(`${this.REFS_PREFIX}/commits:${this.STORAGE_FILE}`);
+      const data = this.migrateData(JSON.parse(result));
+      return data.commits;
+    } catch {
+      const commitsFile = await this.getCommitsFile();
+      const data = this.migrateData(await fs.readJSON(commitsFile));
+      return data.commits;
+    }
+  }
+
+  async saveCommits(commits: IntentionalCommit[]): Promise<void> {
+    const root = await this.getGitRoot();
+    const commitsFile = await this.getCommitsFile();
+
+    const data: StorageData = {
+      version: getPackageInfo().version,
+      commits,
+    };
+    const content = JSON.stringify(data, null, 2);
+
+    const { stdout: hash } = await execa('git', ['hash-object', '-w', '--stdin'], { input: content, cwd: root });
+    const treeContent = `100644 blob ${hash.trim()}\t${this.STORAGE_FILE}\n`;
+    const { stdout: treeHash } = await execa('git', ['mktree'], { input: treeContent, cwd: root });
+    const { stdout: commitHash } = await execa('git', ['commit-tree', treeHash.trim(), '-m', 'Update intent commits'], {
+      cwd: root,
+    });
+
+    await git.cwd(root).raw(['update-ref', `${this.REFS_PREFIX}/commits`, commitHash.trim()]);
+    await fs.writeJSON(commitsFile, data, { spaces: 2 });
+  }
+
+  async initializeRefs(): Promise<void> {
+    const root = await this.getGitRoot();
+    await checkIsRepo(root);
+
+    try {
+      await git.cwd(root).raw(['show-ref', '--verify', `${this.REFS_PREFIX}/commits`]);
+    } catch {
+      const initialData = this.getInitialData();
+      const content = JSON.stringify(initialData, null, 2);
+
+      const { stdout: hash } = await execa('git', ['hash-object', '-w', '--stdin'], { input: content, cwd: root });
+      const treeContent = `100644 blob ${hash.trim()}\t${this.STORAGE_FILE}\n`;
+      const { stdout: treeHash } = await execa('git', ['mktree'], { input: treeContent, cwd: root });
+      const { stdout: commitHash } = await execa(
+        'git',
+        ['commit-tree', treeHash.trim(), '-m', 'Initialize intent commits'],
+        { cwd: root }
+      );
+
+      await git.cwd(root).raw(['update-ref', `${this.REFS_PREFIX}/commits`, commitHash.trim()]);
+    }
   }
 }
 
-// NOTE: Migrate old data
-function migrateData(data: any): StorageData {
-  return data;
-}
-
-export async function loadCommits(): Promise<IntentionalCommit[]> {
-  await checkIsRepo();
-  await ensureCommitsDir();
-
-  try {
-    const result = await git.show(`${REFS_PREFIX}/commits:${STORAGE_FILE}`);
-    const data = migrateData(JSON.parse(result));
-    return data.commits;
-  } catch {
-    const data = migrateData(await fs.readJSON(COMMITS_FILE));
-    return data.commits;
-  }
-}
-
-export async function saveCommits(commits: IntentionalCommit[]): Promise<void> {
-  const data: StorageData = {
-    version: getPackageInfo().version,
-    commits,
-  };
-  const content = JSON.stringify(data, null, 2);
-
-  const { stdout: hash } = await execa('git', ['hash-object', '-w', '--stdin'], { input: content });
-  const treeContent = `100644 blob ${hash.trim()}\t${STORAGE_FILE}\n`;
-  const { stdout: treeHash } = await execa('git', ['mktree'], { input: treeContent });
-  const { stdout: commitHash } = await execa('git', ['commit-tree', treeHash.trim(), '-m', 'Update intent commits']);
-
-  await git.raw(['update-ref', `${REFS_PREFIX}/commits`, commitHash.trim()]);
-  await fs.writeJSON(COMMITS_FILE, data, { spaces: 2 });
-}
-
-export async function initializeRefs(): Promise<void> {
-  await checkIsRepo();
-
-  try {
-    await git.raw(['show-ref', '--verify', `${REFS_PREFIX}/commits`]);
-  } catch {
-    const initialData = getInitialData();
-    const content = JSON.stringify(initialData, null, 2);
-
-    const { stdout: hash } = await execa('git', ['hash-object', '-w', '--stdin'], { input: content });
-    const treeContent = `100644 blob ${hash.trim()}\t${STORAGE_FILE}\n`;
-    const { stdout: treeHash } = await execa('git', ['mktree'], { input: treeContent });
-    const { stdout: commitHash } = await execa('git', [
-      'commit-tree',
-      treeHash.trim(),
-      '-m',
-      'Initialize intent commits',
-    ]);
-
-    await git.raw(['update-ref', `${REFS_PREFIX}/commits`, commitHash.trim()]);
-    await fs.writeJSON(COMMITS_FILE, initialData, { spaces: 2 });
-  }
-}
+export const storage = GitIntentionalCommitStorage.getInstance();

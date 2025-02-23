@@ -1,5 +1,5 @@
 import { createCommit, hasStagedFiles } from '@/utils/git.js';
-import { loadCommits, saveCommits } from '@/utils/storage.js';
+import { storage } from '@/utils/storage.js';
 import chalk from 'chalk';
 import { Command } from 'commander';
 
@@ -7,7 +7,7 @@ const finish = new Command()
   .command('finish')
   .description('Finish current intentional commit')
   .action(async () => {
-    const commits = await loadCommits();
+    const commits = await storage.loadCommits();
     const currentCommit = commits.find((c) => c.status === 'in_progress');
 
     if (!currentCommit) {
@@ -23,7 +23,7 @@ const finish = new Command()
     await createCommit(currentCommit.message);
 
     const updatedCommits = commits.filter((c) => c.id !== currentCommit.id);
-    await saveCommits(updatedCommits);
+    await storage.saveCommits(updatedCommits);
 
     console.log(chalk.green('✓ Completed:'));
     console.log(`ID: ${chalk.blue(currentCommit.id)}`);
