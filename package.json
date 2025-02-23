@@ -24,7 +24,9 @@
     "build": "tsup",
     "start": "node dist/index.js",
     "format": "biome format",
-    "format:fix": "biome format --write"
+    "format:fix": "biome format --write",
+    "test": "vitest",
+    "test:ui": "vitest --ui"
   },
   "dependencies": {
     "chalk": "^5.4.1",
@@ -42,9 +44,11 @@
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^22.13.1",
     "@types/prompts": "^2.4.9",
+    "@vitest/ui": "^3.0.6",
     "tsup": "^8.3.6",
     "type-fest": "^4.34.1",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.6"
   },
   "packageManager": "pnpm@10.3.0"
 }
