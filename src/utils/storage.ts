@@ -116,6 +116,13 @@ export class GitIntentionalCommitStorage {
     await fs.writeJSON(commitsFile, data, { spaces: 2 });
   }
 
+  async clearCommits(): Promise<void> {
+    const root = await this.getGitRoot();
+    const commitsFile = await this.getCommitsFile();
+    await fs.remove(commitsFile);
+    await git.cwd(root).raw(['update-ref', '-d', `${this.REFS_PREFIX}/commits`]);
+  }
+
   async initializeRefs(): Promise<void> {
     const root = await this.getGitRoot();
     await checkIsRepo(root);

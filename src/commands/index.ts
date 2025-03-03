@@ -5,3 +5,4 @@ export { default as status } from './status.js';
 export { default as finish } from './finish.js';
 export { default as remove } from './remove.js';
 export { default as cancel } from './cancel.js';
+export { default as clear } from './clear.js';
