@@ -46,17 +46,12 @@ class TestEnvironment {
     return this._tmpDir;
   }
 
-  async reset() {
-    if (!this._tmpDir) return;
-
-    await execa('git', ['reset', '--hard', 'HEAD'], { cwd: this._tmpDir });
-    await execa('git', ['clean', '-fd'], { cwd: this._tmpDir });
-
-    await storage.saveCommits([]);
-  }
-
   async cleanup() {
     if (this._tmpDir) {
+      await execa('git', ['reset', '--hard', 'HEAD'], { cwd: this._tmpDir });
+      await execa('git', ['clean', '-fd'], { cwd: this._tmpDir });
+
+      await storage.clearCommits();
       await fs.remove(this._tmpDir);
       this._tmpDir = null;
     }
