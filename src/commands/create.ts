@@ -1,8 +1,7 @@
-import { type IntentionalCommit, storage } from '@/utils/storage.js';
+import { storage } from '@/utils/storage.js';
 import chalk from 'chalk';
 import { Command } from 'commander';
 import edit from 'external-editor';
-import { nanoid } from 'nanoid';
 
 const create = new Command()
   .command('create')
@@ -23,23 +22,17 @@ const create = new Command()
       process.exit(1);
     }
 
-    const commits = await storage.loadCommits();
-
-    const newCommit: IntentionalCommit = {
-      id: nanoid(8),
+    const newCommitId = await storage.addCommit({
       message: commitMessage,
       status: 'created',
       metadata: {
         createdAt: new Date().toISOString(),
       },
-    };
-
-    commits.push(newCommit);
-    await storage.saveCommits(commits);
+    });
 
     console.log(chalk.green('✓ Intent created:'));
-    console.log(`ID: ${chalk.blue(newCommit.id)}`);
-    console.log(`Message: ${newCommit.message}`);
+    console.log(`ID: ${chalk.blue(newCommitId)}`);
+    console.log(`Message: ${commitMessage}`);
   });
 
 export default create;
