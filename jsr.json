@@ -1,5 +1,11 @@
 {
   "name": "@kangju/test",
   "version": "0.0.0",
-  "exports": "./dist/index.ts"
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "publish":{
+    "include": ["dist", "package.json", "README.md", "LICENSE"],
+    "exclude": ["test", "scripts"]
+  }
 }
