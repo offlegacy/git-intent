@@ -3,9 +3,9 @@ import { storage } from '@/utils/storage.js';
 import chalk from 'chalk';
 import { Command } from 'commander';
 
-const finish = new Command()
-  .command('finish')
-  .description('Finish current intentional commit')
+const done = new Command()
+  .command('done')
+  .description('Complete the current intent')
   .action(async () => {
     const commits = await storage.loadCommits();
     const currentCommit = commits.find((c) => c.status === 'in_progress');
@@ -41,4 +41,4 @@ const finish = new Command()
     }
   });
 
-export default finish;
+export default done;

@@ -3,9 +3,9 @@ import chalk from 'chalk';
 import { Command } from 'commander';
 import prompts from 'prompts';
 
-const cancel = new Command()
-  .command('cancel')
-  .description('Cancel current in-progress intent')
+const stop = new Command()
+  .command('stop')
+  .description('Stop working on the current intent')
   .action(async () => {
     const commits = await storage.loadCommits();
     const currentCommit = commits.find((c) => c.status === 'in_progress');
@@ -47,4 +47,4 @@ const cancel = new Command()
     console.log('\nNote: Your staged changes are preserved.');
   });
 
-export default cancel;
+export default stop;

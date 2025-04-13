@@ -4,21 +4,21 @@ import { Command } from 'commander';
 import edit from 'external-editor';
 import prompts from 'prompts';
 
-const split = new Command()
-  .command('split')
-  .description('Split an intentional commit into smaller parts')
+const divide = new Command()
+  .command('divide')
+  .description('Divide an intent into smaller parts')
   .action(async () => {
     const commits = await storage.loadCommits();
 
     if (commits.length === 0) {
-      console.log('No intents found to split');
+      console.log('No intents found to divide');
       return;
     }
 
     const response = await prompts({
       type: 'select',
       name: 'id',
-      message: 'Select an intent to split:',
+      message: 'Select an intent to divide:',
       choices: commits.map((c) => ({
         title: `[${c.status === 'created' ? 'Created' : 'In Progress'}] ${c.message.split('\n')[0]} (${c.id})`,
         value: c.id,
@@ -48,7 +48,7 @@ const split = new Command()
 
     const tasks: string[] = [];
 
-    console.log(chalk.yellow('\nSplitting commit into two tasks.'));
+    console.log(chalk.yellow('\nDividing commit into two tasks.'));
     console.log(
       chalk.dim(
         'Tip: Enter a title directly for a simple task, or leave it empty to open an editor for a detailed commit message.'
@@ -79,7 +79,7 @@ const split = new Command()
       initialText = `# Enter commit message for the first task\n# Lines starting with # will be ignored\n\n${initialText}`;
 
       const message = edit.edit(initialText, {
-        postfix: '.git-intent-split',
+        postfix: '.git-intent-divide',
       });
 
       const fullMessage = message
@@ -118,7 +118,7 @@ const split = new Command()
       const initialText = '# Enter commit message for the second task\n# Lines starting with # will be ignored\n';
 
       const message = edit.edit(initialText, {
-        postfix: '.git-intent-split',
+        postfix: '.git-intent-divide',
       });
 
       const fullMessage = message
@@ -152,7 +152,7 @@ const split = new Command()
     const { confirmed } = await prompts({
       type: 'confirm',
       name: 'confirmed',
-      message: 'Do you want to split the commit with these tasks?',
+      message: 'Do you want to divide the commit with these tasks?',
       initial: true,
       onState: (state) => {
         if (state.aborted) {
@@ -198,7 +198,7 @@ const split = new Command()
       await storage.deleteCommit(targetCommit.id);
     }
 
-    console.log(chalk.green('✓ Successfully split the commit:'));
+    console.log(chalk.green('✓ Successfully divided the commit:'));
     for (let i = 0; i < tasks.length; i++) {
       const title = tasks[i].split('\n')[0];
       console.log(`${i + 1}. ${chalk.blue(title)} (ID: ${newCommitIds[i]})`);
@@ -211,4 +211,4 @@ const split = new Command()
     }
   });
 
-export default split;
+export default divide;

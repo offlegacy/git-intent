@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
-import { cancel, clear, create, finish, list, remove, split, start, status } from './commands/index.js';
+import { begin, divide, done, drop, list, plan, reset, status, stop } from './commands/index.js';
 import { getPackageInfo } from './utils/get-package-info.js';
 import { storage } from './utils/storage.js';
 
@@ -15,15 +15,15 @@ import { storage } from './utils/storage.js';
     .name('gintent')
     .description(packageInfo.description)
     .version(packageInfo.version)
-    .addCommand(create)
+    .addCommand(plan)
     .addCommand(list)
-    .addCommand(remove)
-    .addCommand(start)
+    .addCommand(begin)
     .addCommand(status)
-    .addCommand(finish)
-    .addCommand(cancel)
-    .addCommand(clear)
-    .addCommand(split);
+    .addCommand(done)
+    .addCommand(drop)
+    .addCommand(stop)
+    .addCommand(reset)
+    .addCommand(divide);
 
   program.parse();
 })();

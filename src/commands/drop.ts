@@ -3,10 +3,10 @@ import chalk from 'chalk';
 import { Command } from 'commander';
 import prompts from 'prompts';
 
-const remove = new Command()
-  .command('remove')
-  .description('Remove an intentional commit')
-  .argument('[id]', 'Intent id')
+const drop = new Command()
+  .command('drop')
+  .description('Drop a planned intent')
+  .argument('[id]', 'Intent ID')
   .action(async (id?: string) => {
     const commits = await storage.loadCommits();
     const createdCommits = commits.filter((c) => c.status === 'created');
@@ -56,4 +56,4 @@ const remove = new Command()
     console.log(`Message: ${targetCommit.message}`);
   });
 
-export default remove;
+export default drop;

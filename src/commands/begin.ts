@@ -4,10 +4,10 @@ import chalk from 'chalk';
 import { Command } from 'commander';
 import prompts from 'prompts';
 
-const start = new Command()
-  .command('start')
-  .argument('[id]', 'intent id')
-  .description('Start working on an intentional commit')
+const begin = new Command()
+  .command('begin')
+  .argument('[id]', 'Intent ID')
+  .description('Begin working on a planned intent')
   .action(async (id?: string) => {
     const commits = await storage.loadCommits();
 
@@ -61,4 +61,4 @@ const start = new Command()
     console.log(`Message: ${targetCommit.message}`);
   });
 
-export default start;
+export default begin;
