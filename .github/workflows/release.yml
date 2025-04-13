@@ -7,6 +7,14 @@ on:
         description: "Version to release (e.g., 1.0.0)"
         required: true
         type: string
+      skip_npm:
+        description: 'Skip npm publish'
+        type: boolean
+        default: false
+      skip_homebrew:
+        description: 'Skip Homebrew formula update'
+        type: boolean
+        default: false
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -33,6 +41,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Update Version
+        if: ${{ !inputs.skip_npm }}
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
@@ -55,11 +64,13 @@ jobs:
           echo "checksum=$(shasum -a 256 git-intent-${{ github.event.inputs.version }}-darwin-amd64.tar.gz | awk '{print $1}')" >> $GITHUB_OUTPUT
 
       - name: Publish to npm
+        if: ${{ !inputs.skip_npm }}
         run: pnpm publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create GitHub Release
+        if: ${{ !inputs.skip_npm }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -69,6 +80,7 @@ jobs:
             build/git-intent-${{ github.event.inputs.version }}-darwin-amd64.tar.gz
 
       - name: Update Homebrew formula
+        if: ${{ !inputs.skip_homebrew }}
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.PAT }}
