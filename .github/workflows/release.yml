@@ -59,7 +59,9 @@ jobs:
         id: create_checksum
         run: |
           cd build
-          tar -czf git-intent-${{ github.event.inputs.version }}-darwin-amd64.tar.gz git-intent-macos
+          ls -la
+          cp git-intent-macos git-intent
+          tar -czf git-intent-${{ github.event.inputs.version }}-darwin-amd64.tar.gz git-intent
           echo "checksum=$(shasum -a 256 git-intent-${{ github.event.inputs.version }}-darwin-amd64.tar.gz | awk '{print $1}')" >> $GITHUB_OUTPUT
 
       - name: Publish to npm
