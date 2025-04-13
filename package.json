@@ -29,9 +29,9 @@
     "format": "biome format",
     "format:fix": "biome format --write",
     "pkg:build": "pnpm pkg:build:macos && pnpm pkg:build:linux && pnpm pkg:build:win",
-    "pkg:build:macos": "pkg . -t node18-macos-arm64 -o build/git-intent",
-    "pkg:build:linux": "pkg . -t node18-linux-x64 -o build/git-intent",
-    "pkg:build:win": "pkg . -t node18-win-x64 -o build/git-intent.exe",
+    "pkg:build:macos": "pkg . -t node18-macos-arm64 -o build/git-intent-macos",
+    "pkg:build:linux": "pkg . -t node18-linux-x64 -o build/git-intent-linux",
+    "pkg:build:win": "pkg . -t node18-win-x64 -o build/git-intent-win.exe",
     "test": "vitest",
     "test:ui": "vitest --ui"
   },
