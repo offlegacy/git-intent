@@ -7,5 +7,5 @@ export default defineConfig({
   dts: true,
   minify: true,
   shims: true,
-  noExternal: [/.*/],
+  external: ['execa'],
 });
