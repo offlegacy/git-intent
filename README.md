@@ -8,17 +8,27 @@
 
 Most developers write code first and craft commit messages as an afterthought. This practice often leads to large, unclear, and unfocused commits. Inspired by the Test-Driven Development (TDD) approach, git-intent encourages defining clear intentions before you begin coding, transforming your commit process into a proactive part of development.
 
-### Benefits
 
-By focusing on your intentions upfront, git-intent promotes a more thoughtful development approach. This enables you to:
-
-- Maintain a clean, easily navigable commit history.
-- Clearly communicate your development intentions to collaborators and reviewers.
-- Prevent scope creep and maintain smaller, more atomic changes.
-
-git-intent is more than just a CLI tool—it represents a fundamental shift in how you approach version control, enhancing collaboration and project maintainability.
+By focusing on your intentions upfront, git-intent enables you to:
+- Maintain a clean, easily navigable commit history
+- Clearly communicate your development intentions
+- Prevent scope creep and maintain atomic changes
+- Enhance collaboration and project maintainability
 
 > Special thanks to [Joohoon Cha](https://github.com/jcha0713) for introducing the [Intent-Driven Git Workflow](https://youtu.be/yDRs4Pl1Lq0?feature=shared) concept.
+
+## Quick Start
+
+```bash
+# 1. Install Using Homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/offlegacy/git-intent/main/scripts/install.sh)"
+
+# 2. Add an intention
+git intent add "feat: create user login page"
+
+# 3. Start working
+git intent start
+```
 
 ## Requirements
 
@@ -29,132 +39,56 @@ git-intent is more than just a CLI tool—it represents a fundamental shift in h
 
 ### Using Homebrew (macOS, Linux)
 
-1. Install Homebrew (if not installed):
-```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
-
-2. Install git-intent:
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/offlegacy/git-intent/main/scripts/install.sh)"
 ```
 [View install script](https://github.com/offlegacy/git-intent/blob/main/scripts/install.sh)
 
-### Using NPM
+### Using NPM (All platforms)
 
 ```bash
 npm install -g git-intent
 ```
 
-## Updating
+### Updating
 
-To update to the latest version, follow these steps based on your installation method:
-
-**Homebrew**
 ```bash
-brew update
-brew upgrade git-intent
-```
+# Homebrew
+brew update && brew upgrade git-intent
 
-**NPM**
-```bash
+# NPM
 npm update -g git-intent
-```
 
-Check your installed version:
-```bash
+# Check version
 git intent --version
 ```
 
 ## Usage
 
-Plan your commits ahead of time for clearer, more purposeful development.
-
-### Adding Intentions
-
-Add new commit intentions with clear messages:
+### Basic Commands
 
 ```bash
+# Add intentions
 git intent add "feat: implement login page"
-git intent add "feat: add password validation"
-```
+git intent add  # opens editor
 
-Or launch an editor to draft your intention:
+# List and manage
+git intent list    # show all intentions
+git intent show    # show current intention
+git intent start   # start working (interactive)
+git intent start <id>  # start specific intention
 
-```bash
-git intent add
-```
+# Complete or modify
+git intent commit  # commit current intention
+git intent commit -m "Additional message"  # with extra details
+git intent cancel  # cancel current intention
+git intent reset   # clear all intentions
 
-### Listing Intentions
-
-Review all defined intentions:
-
-```bash
-git intent list
-```
-
-### Starting an Intention
-
-Begin working on a specific intention by providing its ID:
-
-```bash
-git intent start <intention-id>
-```
-
-Or interactively select one:
-
-```bash
-git intent start
-```
-
-### Checking Current Intention
-
-Check the intention you're currently working on:
-
-```bash
-git intent show
-```
-
-### Committing an Intention
-
-Commit your current intention directly:
-
-```bash
-git intent commit
-```
-
-Or append an additional descriptive message:
-
-```bash
-git intent commit -m "Add tests and fix edge case"
-```
-
-### Canceling, Resetting, and Managing Intentions
-
-Cancel the current intention:
-
-```bash
-git intent cancel
-```
-
-Reset (clear) all intentions:
-
-```bash
-git intent reset
-```
-
-Divide an intention into smaller tasks by providing an ID or interactively selecting one:
-
-```bash
-git intent divide <intention-id>
-# or interactively:
-git intent divide
-```
-
-Drop (remove) a specific intention:
-
-```bash
-git intent drop <intention-id>
+# Advanced
+git intent divide  # split intention (interactive)
+git intent divide <id>  # split specific intention
+git intent drop  # remove intention (interactive)
+git intent drop <id>    # remove specific intention
 ```
 
 ## FAQ
@@ -173,4 +107,4 @@ We warmly welcome contributions from the community. See our detailed guide:
 
 ## License
 
-MIT © [OffLegacy](https://github.com/offlegacy) — see [LICENSE](./LICENSE) for details.
+MIT [OffLegacy](https://github.com/offlegacy) — [LICENSE](./LICENSE)
