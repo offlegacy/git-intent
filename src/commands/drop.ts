@@ -7,14 +7,21 @@ const drop = new Command()
   .command('drop')
   .description('Drop a planned intent')
   .argument('[id]', 'Intent ID')
-  .action(async (id?: string) => {
+  .option('-a, --all', 'Drop all created intents')
+  .action(async (id: string | undefined, options: { all?: boolean }) => {
     const commits = await storage.loadCommits();
     const createdCommits = commits.filter((c) => c.status === 'created');
+
+    if (options.all) {
+      await storage.saveCommits([]);
+      console.log(chalk.green('✓ All created intents removed'));
+      return;
+    }
 
     let selectedId = id;
     if (!selectedId) {
       if (createdCommits.length === 0) {
-        console.log('No created intents found');
+        console.log('No created intents found. Nothing to remove.');
         return;
       }
 
