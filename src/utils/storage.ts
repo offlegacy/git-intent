@@ -119,22 +119,44 @@ export class GitIntentionalCommitStorage {
       version: getPackageInfo().version,
       commits,
     };
-    
+
     await this.saveCommitsData(data);
   }
 
   async addCommit(commit: Omit<IntentionalCommit, 'id'>): Promise<string> {
     const currentCommits = await this.loadCommits();
     const newCommitId = generateId(8);
-    
+
     const data: StorageData = {
       version: getPackageInfo().version,
       commits: [...currentCommits, { ...commit, id: newCommitId }],
     };
-    
+
     await this.saveCommitsData(data);
 
     return newCommitId;
+  }
+
+  async updateCommitMessage(id: string, message: IntentionalCommit['message']): Promise<void> {
+    const currentCommits = await this.loadCommits();
+
+    const existingCommit = currentCommits.find((c) => c.id === id);
+    if (!existingCommit) {
+      throw new Error('Commit not found');
+    }
+
+    const data: StorageData = {
+      version: getPackageInfo().version,
+      commits: currentCommits.map((c) => (c.id === id ? { ...existingCommit, message } : c)),
+    };
+
+    await this.saveCommitsData(data);
+  }
+
+  async deleteCommit(id: string): Promise<void> {
+    const currentCommits = await this.loadCommits();
+    const newCommits = currentCommits.filter((c) => c.id !== id);
+    await this.saveCommits(newCommits);
   }
 
   async clearCommits(): Promise<void> {

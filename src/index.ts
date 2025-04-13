@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
-import { cancel, clear, create, finish, list, remove, start, status } from './commands/index.js';
+import { cancel, clear, create, finish, list, remove, split, start, status } from './commands/index.js';
 import { getPackageInfo } from './utils/get-package-info.js';
 import { storage } from './utils/storage.js';
 
@@ -22,7 +22,8 @@ import { storage } from './utils/storage.js';
     .addCommand(status)
     .addCommand(finish)
     .addCommand(cancel)
-    .addCommand(clear);
+    .addCommand(clear)
+    .addCommand(split);
 
   program.parse();
 })();
