@@ -20,8 +20,8 @@ By focusing on your intentions upfront, git-intent enables you to:
 ## Quick Start
 
 ```bash
-# 1. Install Using Homebrew
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/offlegacy/git-intent/main/scripts/install.sh)"
+# 1. Install Using NPM
+npm install -g git-intent
 
 # 2. Add an intention
 git intent add "feat: create user login page"
@@ -37,14 +37,7 @@ git intent start
 
 ## Installation
 
-### Using Homebrew (macOS, Linux)
-
-```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/offlegacy/git-intent/main/scripts/install.sh)"
-```
-[View install script](https://github.com/offlegacy/git-intent/blob/main/scripts/install.sh)
-
-### Using NPM (All platforms)
+### Using NPM
 
 ```bash
 npm install -g git-intent
@@ -53,9 +46,6 @@ npm install -g git-intent
 ### Updating
 
 ```bash
-# Homebrew
-brew update && brew upgrade git-intent
-
 # NPM
 npm update -g git-intent
 
