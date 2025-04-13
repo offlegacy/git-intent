@@ -1,6 +1,6 @@
 # git-intent
 
-![npm version](https://img.shields.io/npm/v/git-intent.svg) ![license](https://img.shields.io/github/license/offlegacy/git-intent)
+![npm version](https://img.shields.io/npm/v/git-intent.svg)
 
 **git-intent** is a Git workflow tool designed for creating [intentional commits](https://intentionalcommits.org/).
 
