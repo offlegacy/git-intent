@@ -15,7 +15,6 @@
   "license": "MIT",
   "files": ["dist"],
   "type": "module",
-  "exports": "./dist/index.js",
   "bin": {
     "gintent": "./dist/index.js"
   },
@@ -25,8 +24,13 @@
     "start": "node dist/index.js",
     "format": "biome format",
     "format:fix": "biome format --write",
+    "pkg:build": "pnpm build && pkg . --no-bytecode -t node18-macos-x64,node18-linux-x64,node18-win-x64 --out-dir build",
     "test": "vitest",
     "test:ui": "vitest --ui"
+  },
+  "pkg": {
+    "assets": ["dist/**/*"],
+    "outputPath": "build"
   },
   "dependencies": {
     "chalk": "^5.4.1",
@@ -45,6 +49,7 @@
     "@types/node": "^22.13.1",
     "@types/prompts": "^2.4.9",
     "@vitest/ui": "^3.0.6",
+    "pkg": "^5.8.1",
     "tsup": "^8.3.6",
     "type-fest": "^4.34.1",
     "typescript": "^5.7.3",
