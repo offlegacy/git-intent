@@ -84,6 +84,6 @@ jobs:
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.PAT }}
-          repository: offlegacy/homebrew-git-intent
+          repository: kangju2000/homebrew-git-intent
           event-type: update-formula
           client-payload: '{"version": "${{ github.event.inputs.version }}", "sha256": "${{ steps.create_checksum.outputs.checksum }}"}'
