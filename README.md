@@ -1,59 +1,28 @@
 # git-intent
 
-Git workflow tool for intentional commits - Define your commit intentions before coding to write more meaningful and purposeful code.
+Git workflow tool for intentional commits - Define your commit intentions before coding to write more meaningful and purposeful code
 
-Inspired by [intentionalcommits.org](https://intentionalcommits.org/), this tool helps you create more focused and purposeful commits by defining your intentions before you start coding.
+## Installation
 
-## Installation & Usage
-
-You can use this tool without installation via `npx`:
+### Using install script (Recommended)
 
 ```bash
-npx gintent [command]
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/offlegacy/git-intent/main/scripts/install.sh)"
 ```
 
-Or install it globally:
+### Manual installation
 
 ```bash
-npm install -g gintent
+brew tap offlegacy/git-intent
+brew install git-intent
 ```
 
-### Git Integration
-
-You can also use it as a git command by adding an alias to your git config:
+## Usage
 
 ```bash
-git config --global alias.intent '!npx gintent'
+git intent
 ```
-
-Then you can use it like this:
-
-```bash
-git intent [command]
-```
-
-## How it works
-
-1. **Define your intent**: Before you start coding, define what you're going to commit.
-2. **Start working**: Begin implementing your intent when you're ready.
-3. **Track progress**: Keep track of what you're working on with clear status updates.
-4. **Finish with purpose**: Complete your work with a clear, pre-defined commit message.
-
-This workflow helps you:
-
-- Write more focused and purposeful code
-- Create cleaner, more meaningful commits
-- Stay aligned with your original intentions
-- Avoid writing vague commit messages after the fact
-
-## Contributing
-
-We welcome contribution from everyone in the community. Read below for detailed contribution guide.
-
-[CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ## License
 
-See [LICENSE](./LICENSE) for more information.
-
-MIT @ [OffLegacy](https://github.com/offlegacy)
+MIT
