@@ -1,8 +1,8 @@
 import os from 'node:os';
 import path from 'node:path';
 import { storage } from '@/utils/storage';
-import { execa } from 'execa';
 import fs from 'fs-extra';
+import execa from 'execa';
 
 class TestEnvironment {
   private static instance: TestEnvironment;

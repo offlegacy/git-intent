@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { execa } from 'execa';
+import execa from 'execa';
 import fs from 'fs-extra';
 import { generateId } from './generateId';
 import { getPackageInfo } from './get-package-info';

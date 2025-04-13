@@ -27,7 +27,7 @@
   "scripts": {
     "dev": "tsup --watch",
     "build": "tsup",
-    "start": "node dist/index.cjs",
+    "start": "node dist/index.js",
     "format": "biome format",
     "format:fix": "biome format --write",
     "pkg:build": "pnpm pkg:build:macos && pnpm pkg:build:linux && pnpm pkg:build:win",

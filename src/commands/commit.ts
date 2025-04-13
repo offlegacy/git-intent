@@ -1,7 +1,7 @@
+import { createCommit } from '@/utils/git.js';
 import { storage } from '@/utils/storage.js';
 import chalk from 'chalk';
 import { Command } from 'commander';
-import { execa } from 'execa';
 
 const commit = new Command()
   .command('commit')
@@ -18,7 +18,7 @@ const commit = new Command()
 
     const message = options.message ? `${currentCommit.message}\n\n${options.message}` : currentCommit.message;
 
-    await execa('git', ['commit', '-m', message]);
+    await createCommit(message);
     await storage.deleteCommit(currentCommit.id);
 
     console.log(chalk.green('✓ Intention completed and committed'));
