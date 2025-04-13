@@ -16,7 +16,7 @@
   "files": ["dist"],
   "type": "module",
   "bin": {
-    "gintent": "./dist/index.js"
+    "git-intent": "./dist/index.js"
   },
   "scripts": {
     "dev": "tsup --watch",

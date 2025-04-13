@@ -44,15 +44,44 @@ jobs:
       - name: Build Package
         run: pnpm build
 
+      - name: Build Binary
+        run: pnpm pkg:build
+
+      - name: Create Checksum
+        run: |
+          cd build
+          tar -czf git-intent-${{ github.event.inputs.version }}-darwin-amd64.tar.gz git-intent-macos
+          shasum -a 256 git-intent-${{ github.event.inputs.version }}-darwin-amd64.tar.gz > git-intent-${{ github.event.inputs.version }}-darwin-amd64.tar.gz.sha256
+
       - name: Create GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release create v${{ github.event.inputs.version }} \
             --title "v${{ github.event.inputs.version }}" \
-            --generate-notes
+            --generate-notes \
+            build/git-intent-${{ github.event.inputs.version }}-darwin-amd64.tar.gz \
+            build/git-intent-${{ github.event.inputs.version }}-darwin-amd64.tar.gz.sha256
 
       - name: Publish to npm
         run: pnpm publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Release to Homebrew
+        uses: Justintime50/homebrew-releaser@v2
+        with:
+          homebrew_owner: kangju2000
+          homebrew_tap: homebrew-git-intent
+          formula_folder: Formula
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          commit_owner: github-actions[bot]
+          commit_email: github-actions[bot]@users.noreply.github.com
+          formula_name: git-intent
+          install: 'bin.install "git-intent"'
+          test: 'system "#{bin}/git-intent --version"'
+          target_darwin_amd64: true
+          target_darwin_arm64: false
+          target_linux_amd64: false
+          target_linux_arm64: false
+          update_readme_table: true
