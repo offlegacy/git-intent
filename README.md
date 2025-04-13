@@ -20,8 +20,63 @@ npm install -g git-intent
 
 ## Usage
 
+Git Intent is a Git workflow tool for intentional commits. Plan your commits before coding to write more meaningful and purposeful code.
+
 ```bash
-git intent
+# Add multiple intentions
+git intent add "feat: implement login page"
+git intent add "feat: add password validation"
+git intent add "feat: implement session management"
+
+# List all intentions
+git intent list
+
+# Start working on a specific intention
+git intent start <intention-id>
+
+# Show current intention
+git intent show
+
+# Complete current intention and commit
+git intent commit
+
+# Cancel current intention
+git intent cancel
+
+# Reset all intentions
+git intent reset
+
+# Divide an intention into smaller parts
+git intent divide <intention-id>
+
+# Drop a specific intention
+git intent drop <intention-id>
+```
+
+### Workflow Example
+
+```bash
+# 1. Add multiple intentions
+git intent add "feat: implement login page"
+git intent add "feat: add form validation"
+
+# 2. List all intentions
+git intent list
+
+# 3. Start working on the first intention
+git intent start <intention-id>
+
+# 4. Stage your changes
+git add .
+
+# 5. Review your intention
+git intent show
+
+# 6. Complete your intention
+git intent commit
+
+# 7. Start next intention
+git intent start <next-intention-id>
 ```
 
 ## Contributing
