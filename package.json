@@ -18,6 +18,10 @@
   "bin": {
     "git-intent": "./dist/index.js"
   },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "scripts": {
     "dev": "tsup --watch",
     "build": "tsup",
