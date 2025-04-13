@@ -6,8 +6,11 @@ echo "Installing git-intent..."
 
 # Check if Homebrew is installed
 if ! command -v brew &> /dev/null; then
-  echo "Homebrew is required but not installed. Installing Homebrew..."
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  echo "Error: Homebrew is required but not installed."
+  echo "Please install Homebrew first:"
+  echo "  /bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
+  echo "Then run this script again."
+  exit 1
 fi
 
 # Add tap and install git-intent
