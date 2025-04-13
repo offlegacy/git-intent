@@ -1,9 +1,8 @@
-export { default as plan } from './plan.js';
 export { default as list } from './list.js';
 export { default as begin } from './begin.js';
-export { default as status } from './status.js';
-export { default as done } from './done.js';
+export { default as show } from './show.js';
+export { default as commit } from './commit.js';
 export { default as drop } from './drop.js';
-export { default as stop } from './stop.js';
+export { default as cancel } from './cancel.js';
 export { default as reset } from './reset.js';
 export { default as divide } from './divide.js';

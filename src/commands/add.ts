@@ -3,9 +3,9 @@ import chalk from 'chalk';
 import { Command } from 'commander';
 import edit from 'external-editor';
 
-const plan = new Command()
-  .command('plan')
-  .description('Plan a new intentional commit before starting work')
+const add = new Command()
+  .command('add')
+  .description('Add a new intentional commit before starting work')
   .argument('[message]', 'Intent message')
   .action(async (message?: string) => {
     let commitMessage = message;
@@ -35,4 +35,4 @@ const plan = new Command()
     console.log(`Message: ${commitMessage}`);
   });
 
-export default plan;
+export default add;

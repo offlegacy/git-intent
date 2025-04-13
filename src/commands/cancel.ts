@@ -3,15 +3,15 @@ import chalk from 'chalk';
 import { Command } from 'commander';
 import prompts from 'prompts';
 
-const stop = new Command()
-  .command('stop')
-  .description('Stop working on the current intent')
+const cancel = new Command()
+  .command('cancel')
+  .description('Cancel current intention')
   .action(async () => {
     const commits = await storage.loadCommits();
     const currentCommit = commits.find((c) => c.status === 'in_progress');
 
     if (!currentCommit) {
-      console.error('No intent in progress');
+      console.log('No active intention');
       return;
     }
 
@@ -47,4 +47,4 @@ const stop = new Command()
     console.log('\nNote: Your staged changes are preserved.');
   });
 
-export default stop;
+export default cancel;

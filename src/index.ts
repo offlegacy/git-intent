@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
-import { begin, divide, done, drop, list, plan, reset, status, stop } from './commands/index.js';
+import { create, list, begin, show, commit, cancel, reset, divide } from './commands/index.js';
 import { getPackageInfo } from './utils/get-package-info.js';
 import { storage } from './utils/storage.js';
 
@@ -12,16 +12,17 @@ import { storage } from './utils/storage.js';
   const packageInfo = getPackageInfo();
 
   program
-    .name('gintent')
+    .name('git-intent')
     .description(packageInfo.description)
-    .version(packageInfo.version)
-    .addCommand(plan)
+    .version(packageInfo.version);
+
+  program
+    .addCommand(create)
     .addCommand(list)
     .addCommand(begin)
-    .addCommand(status)
-    .addCommand(done)
-    .addCommand(drop)
-    .addCommand(stop)
+    .addCommand(show)
+    .addCommand(commit)
+    .addCommand(cancel)
     .addCommand(reset)
     .addCommand(divide);
 
