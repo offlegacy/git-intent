@@ -28,7 +28,7 @@
     "start": "node dist/index.js",
     "format": "biome format",
     "format:fix": "biome format --write",
-    "pkg:build": "pnpm build && pkg . --no-bytecode -t node18-macos-x64,node18-linux-x64,node18-win-x64 --out-dir build",
+    "pkg:build": "pkg . --no-bytecode -t node18-macos-x64,node18-linux-x64,node18-win-x64 --out-dir build",
     "test": "vitest",
     "test:ui": "vitest --ui"
   },
