@@ -1,7 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "moduleResolution": "node",
     "resolveJsonModule": true,
     "strict": true,
     "strictNullChecks": true,
@@ -9,6 +8,8 @@
     "esModuleInterop": true,
     "skipDefaultLibCheck": true,
     "skipLibCheck": true,
+    "module": "node16",
+    "moduleResolution": "node16",
     "paths": {
       "@/*": ["./src/*"]
     }
