@@ -90,10 +90,13 @@ export class GitIntentionalCommitStorage {
     try {
       const result = await git.cwd(root).show(`${this.REFS_PREFIX}/commits:${this.storageFilename}`);
       const data = this.migrateData(JSON.parse(result));
+
+      console.log(data);
       return data.commits;
     } catch {
       const commitsFile = await this.getCommitsFile();
       const data = this.migrateData(await fs.readJSON(commitsFile));
+      console.log(data);
       return data.commits;
     }
   }
