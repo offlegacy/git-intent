@@ -1,4 +1,4 @@
-import { getCurrentBranch } from '@/utils/git';
+import { getCurrentBranch } from '@/utils/git.js';
 import { storage } from '@/utils/storage.js';
 import chalk from 'chalk';
 import { Command } from 'commander';

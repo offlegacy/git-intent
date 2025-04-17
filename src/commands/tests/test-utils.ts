@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import execa, { type Options } from 'execa';
-import { testEnvironment } from './test-environment';
+import { testEnvironment } from './test-environment.js';
 
 export const CLI_PATH = join(__dirname, '../../../dist/index.js');
 

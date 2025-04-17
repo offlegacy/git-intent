@@ -1,5 +1,5 @@
 import { afterAll, beforeAll } from 'vitest';
-import { testEnvironment } from './test-environment';
+import { testEnvironment } from './test-environment.js';
 
 beforeAll(async () => {
   await testEnvironment.setup();

@@ -1,6 +1,6 @@
-import { storage } from '@/utils/storage';
+import { storage } from '@/utils/storage.js';
 import { describe, expect, test } from 'vitest';
-import { runCLI } from './test-utils';
+import { runCLI } from './test-utils.js';
 
 describe('create command', () => {
   test('should create a new intentional commit', async () => {

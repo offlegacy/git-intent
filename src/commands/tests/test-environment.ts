@@ -1,6 +1,6 @@
 import os from 'node:os';
 import path from 'node:path';
-import { storage } from '@/utils/storage';
+import { storage } from '@/utils/storage.js';
 import fs from 'fs-extra';
 import execa from 'execa';
 

@@ -13,9 +13,7 @@
     "todo-driven"
   ],
   "license": "MIT",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "type": "module",
   "bin": {
     "git-intent": "./dist/index.js"
@@ -38,9 +36,7 @@
     "test:ui": "vitest --ui"
   },
   "pkg": {
-    "assets": [
-      "dist/**/*"
-    ],
+    "assets": ["dist/**/*"],
     "outputPath": "build"
   },
   "dependencies": {
