@@ -16,7 +16,7 @@
   "files": ["dist"],
   "type": "module",
   "bin": {
-    "git-intent": "./dist/index.js"
+    "git-intent": "./dist/index.cjs"
   },
   "publishConfig": {
     "access": "public",
@@ -29,9 +29,9 @@
     "format": "biome format",
     "format:fix": "biome format --write",
     "pkg:build": "pnpm pkg:build:macos && pnpm pkg:build:linux && pnpm pkg:build:win",
-    "pkg:build:macos": "pkg . -t node18-macos-arm64 -o build/git-intent-macos",
-    "pkg:build:linux": "pkg . -t node18-linux-x64 -o build/git-intent-linux",
-    "pkg:build:win": "pkg . -t node18-win-x64 -o build/git-intent-win.exe",
+    "pkg:build:macos": "pkg . --no-bytecode -t node18-macos-arm64 -o build/git-intent-macos",
+    "pkg:build:linux": "pkg . --no-bytecode -t node18-linux-x64 -o build/git-intent-linux",
+    "pkg:build:win": "pkg . --no-bytecode -t node18-win-x64 -o build/git-intent-win.exe",
     "test": "vitest",
     "test:ui": "vitest --ui"
   },
@@ -42,7 +42,6 @@
   "dependencies": {
     "chalk": "^4.1.2",
     "commander": "^13.1.0",
-    "execa": "^5.1.1",
     "external-editor": "^3.1.0",
     "fs-extra": "^11.3.0",
     "nanoid": "^3.3.7",

@@ -162,6 +162,7 @@ export class GitIntentionalCommitStorage {
     await checkIsRepo(root);
 
     const refExists = await checkRefExists(`${this.REFS_PREFIX}/commits`, root);
+
     if (!refExists) {
       const initialData = this.getInitialData();
       const content = JSON.stringify(initialData, null, 2);
@@ -170,6 +171,10 @@ export class GitIntentionalCommitStorage {
       const treeContent = `100644 blob ${hash}\t${this.storageFilename}\n`;
       const treeHash = await createTree(treeContent, root);
       const commitHash = await createCommitTree(treeHash, 'Initialize intent commits', root);
+
+      if (!commitHash || commitHash.trim() === '') {
+        throw new Error('Failed to create commit: commit hash is empty');
+      }
 
       await updateRef(`${this.REFS_PREFIX}/commits`, commitHash, root);
     }
