@@ -1,9 +1,9 @@
 import path from 'node:path';
 import execa from 'execa';
 import fs from 'fs-extra';
-import { generateId } from './generateId';
-import { getPackageInfo } from './get-package-info';
-import git, { checkIsRepo } from './git';
+import { generateId } from './generateId.js';
+import { getPackageInfo } from './get-package-info.js';
+import git, { checkIsRepo } from './git.js';
 
 export type IntentionalCommit = {
   id: string;
