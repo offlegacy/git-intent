@@ -4,18 +4,37 @@
 
 **git-intent** is a Git workflow tool designed for creating [intentional commits](https://intentionalcommits.org/).
 
-### Why git-intent?
+## Why git-intent?
 
 Most developers write code first and craft commit messages as an afterthought. This practice often leads to large, unclear, and unfocused commits. Inspired by the Test-Driven Development (TDD) approach, git-intent encourages defining clear intentions before you begin coding, transforming your commit process into a proactive part of development.
 
-
 By focusing on your intentions upfront, git-intent enables you to:
+
 - Maintain a clean, easily navigable commit history
 - Clearly communicate your development intentions
 - Prevent scope creep and maintain atomic changes
 - Enhance collaboration and project maintainability
 
 > Special thanks to [Joohoon Cha](https://github.com/jcha0713) for introducing the [Intent-Driven Git Workflow](https://youtu.be/yDRs4Pl1Lq0?feature=shared) concept.
+
+## Workflow
+
+```mermaid
+flowchart LR
+    A[Define Intent] -->|git intent add| B[Start Work]
+    B -->|git intent start| C[Code]
+    C -->|git intent commit| A
+    
+    subgraph "Optional Actions"
+    D[Divide Intent]
+    E[Cancel Intent]
+    F[Drop Intent]
+    end
+    
+    C -.->|git intent divide| D
+    C -.->|git intent cancel| E
+    A -.->|git intent drop| F
+```
 
 ## Quick Start
 
