@@ -13,9 +13,7 @@
     "todo-driven"
   ],
   "license": "MIT",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "type": "module",
   "bin": {
     "git-intent": "./dist/index.cjs"
@@ -30,17 +28,12 @@
     "start": "node dist/index.js",
     "format": "biome format",
     "format:fix": "biome format --write",
-    "pkg:build": "pnpm pkg:build:macos && pnpm pkg:build:linux && pnpm pkg:build:win",
     "pkg:build:macos": "pkg . --no-bytecode -t node18-macos-arm64 -o build/git-intent-macos",
-    "pkg:build:linux": "pkg . --no-bytecode -t node18-linux-x64 -o build/git-intent-linux",
-    "pkg:build:win": "pkg . --no-bytecode -t node18-win-x64 -o build/git-intent-win.exe",
     "test": "vitest",
     "test:ui": "vitest --ui"
   },
   "pkg": {
-    "assets": [
-      "dist/**/*"
-    ],
+    "assets": ["dist/**/*"],
     "outputPath": "build"
   },
   "dependencies": {
