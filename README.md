@@ -66,6 +66,16 @@ git intent start
 npm install -g git-intent
 ```
 
+### Using Install Script (macOS only)
+
+You can install git-intent directly using our install script with Homebrew:
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/offlegacy/git-intent/main/scripts/install.sh)"
+```
+
+This script uses Homebrew and is only available for macOS. Homebrew must be installed on your system before running this script.
+
 ### Updating
 
 ```bash

@@ -67,6 +67,16 @@ git intent start
 npm install -g git-intent
 ```
 
+### 설치 스크립트 사용 (macOS 전용)
+
+다음 스크립트를 사용하여 Homebrew로 직접 설치할 수 있어요:
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/offlegacy/git-intent/main/scripts/install.sh)"
+```
+
+이 스크립트는 Homebrew를 사용하며 macOS에서만 사용 가능해요. 실행하기 전에 시스템에 Homebrew가 설치되어 있어야 해요.
+
 ### 업데이트
 
 ```bash
