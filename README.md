@@ -8,8 +8,8 @@ English | [한국어](./README.ko.md)
 
 ## Why git-intent?
 
-Most developers tend to write code first and only think about commit messages afterward.
-This often results in large, unfocused, and unclear commits.
+Most developers tend to write code first and only think about commit messages afterward.  
+This often results in large, unfocused, and unclear commits.  
 Inspired by the Test-Driven Development (TDD) approach, **git-intent** helps you define clear intents before you start coding, making your commit process an intentional part of development.
 
 By focusing on your intent before coding, **git-intent** helps you:
