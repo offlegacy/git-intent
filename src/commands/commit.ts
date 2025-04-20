@@ -1,4 +1,4 @@
-import { createCommit } from '@/utils/git.js';
+import { git } from '@/utils/git.js';
 import { storage } from '@/utils/storage.js';
 import chalk from 'chalk';
 import { Command } from 'commander';
@@ -18,7 +18,7 @@ const commit = new Command()
 
     const message = options.message ? `${currentCommit.message}\n\n${options.message}` : currentCommit.message;
 
-    await createCommit(message);
+    await git.createCommit(message);
     await storage.deleteCommit(currentCommit.id);
 
     console.log(chalk.green('✓ Intention completed and committed'));

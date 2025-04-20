@@ -3,22 +3,15 @@ import fs from 'fs-extra';
 import type { IntentionalCommit, StorageData } from '../types/intent.js';
 import { generateId } from './generateId.js';
 import { getPackageInfo } from './get-package-info.js';
-import git, {
-  checkIsRepo,
-  hashObject,
-  createTree,
-  createCommitTree,
-  updateRef,
-  deleteRef,
-  checkRefExists,
-} from './git.js';
+import { git } from './git.js';
+import { gitRefs } from './git-refs.js';
 
 export class GitIntentionalCommitStorage {
   private static instance: GitIntentionalCommitStorage;
   private readonly REFS_PREFIX = 'refs/intentional-commits';
-  private storageFilename;
+  private storageFilename: string;
   private readonly GIT_DIR = '.git';
-  private gitRoot: string | undefined;
+  private gitRootCache: string | undefined;
 
   private constructor() {
     this.storageFilename = process.env.VITEST ? 'test_intents.json' : 'intents.json';
@@ -31,13 +24,18 @@ export class GitIntentionalCommitStorage {
     return GitIntentionalCommitStorage.instance;
   }
 
-  setGitRoot(root: string): void {
-    this.gitRoot = root;
-  }
-
   async getGitRoot(): Promise<string> {
-    if (this.gitRoot) return this.gitRoot;
-    return process.cwd();
+    if (this.gitRootCache) return this.gitRootCache;
+
+    const isRepo = await git.checkIsRepo();
+    if (!isRepo) {
+      console.error('Error: git-intent can only be used within a Git repository.');
+      console.error('Please check if the current directory is a Git repository or initialize one with `git init`.');
+      process.exit(1);
+    }
+
+    this.gitRootCache = await git.getRepoRoot();
+    return this.gitRootCache;
   }
 
   private async getCommitsDir(): Promise<string> {
@@ -75,18 +73,15 @@ export class GitIntentionalCommitStorage {
 
   async loadCommits(): Promise<IntentionalCommit[]> {
     const root = await this.getGitRoot();
-    await checkIsRepo(root);
     await this.ensureCommitsDir();
 
     try {
-      const result = await git.cwd(root).show(`${this.REFS_PREFIX}/commits:${this.storageFilename}`);
+      const result = await gitRefs.showRef(`${this.REFS_PREFIX}/commits:${this.storageFilename}`, root);
       const data = this.migrateData(JSON.parse(result));
-
       return data.commits;
     } catch {
       const commitsFile = await this.getCommitsFile();
       const data = this.migrateData(await fs.readJSON(commitsFile));
-
       return data.commits;
     }
   }
@@ -96,12 +91,12 @@ export class GitIntentionalCommitStorage {
     const commitsFile = await this.getCommitsFile();
     const content = JSON.stringify(data, null, 2);
 
-    const hash = await hashObject(content, root);
+    const hash = await git.hashObject(content, root);
     const treeContent = `100644 blob ${hash}\t${this.storageFilename}\n`;
-    const treeHash = await createTree(treeContent, root);
-    const commitHash = await createCommitTree(treeHash, 'Update intent commits', root);
+    const treeHash = await gitRefs.createTree(treeContent, root);
+    const commitHash = await gitRefs.createCommitTree(treeHash, 'Update intent commits', root);
 
-    await updateRef(`${this.REFS_PREFIX}/commits`, commitHash, root);
+    await gitRefs.updateRef(`${this.REFS_PREFIX}/commits`, commitHash, root);
     await fs.writeJSON(commitsFile, data, { spaces: 2 });
   }
 
@@ -154,30 +149,37 @@ export class GitIntentionalCommitStorage {
     const root = await this.getGitRoot();
     const commitsFile = await this.getCommitsFile();
     await fs.remove(commitsFile);
-    await deleteRef(`${this.REFS_PREFIX}/commits`, root);
+    await gitRefs.deleteRef(`${this.REFS_PREFIX}/commits`, root);
   }
 
   async initializeRefs(): Promise<void> {
     const root = await this.getGitRoot();
-    await checkIsRepo(root);
 
-    const refExists = await checkRefExists(`${this.REFS_PREFIX}/commits`, root);
-
-    if (!refExists) {
-      const initialData = this.getInitialData();
-      const content = JSON.stringify(initialData, null, 2);
-
-      const hash = await hashObject(content, root);
-      const treeContent = `100644 blob ${hash}\t${this.storageFilename}\n`;
-      const treeHash = await createTree(treeContent, root);
-      const commitHash = await createCommitTree(treeHash, 'Initialize intent commits', root);
-
-      if (!commitHash || commitHash.trim() === '') {
-        throw new Error('Failed to create commit: commit hash is empty');
-      }
-
-      await updateRef(`${this.REFS_PREFIX}/commits`, commitHash, root);
+    const isRepo = await git.checkIsRepo(root);
+    if (!isRepo) {
+      console.error('Error: git-intent can only be used within a Git repository.');
+      console.error('Please check if the current directory is a Git repository or initialize one with `git init`.');
+      process.exit(1);
     }
+
+    const refExists = await gitRefs.checkRefExists(`${this.REFS_PREFIX}/commits`, root);
+    if (refExists) {
+      return;
+    }
+
+    const initialData = this.getInitialData();
+    const content = JSON.stringify(initialData, null, 2);
+
+    const hash = await git.hashObject(content, root);
+    const treeContent = `100644 blob ${hash}\t${this.storageFilename}\n`;
+    const treeHash = await gitRefs.createTree(treeContent, root);
+    const commitHash = await gitRefs.createCommitTree(treeHash, 'Initialize intent commits', root);
+
+    if (!commitHash || commitHash.trim() === '') {
+      throw new Error('Failed to create commit: commit hash is empty');
+    }
+
+    await gitRefs.updateRef(`${this.REFS_PREFIX}/commits`, commitHash, root);
   }
 }
 

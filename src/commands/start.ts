@@ -1,4 +1,4 @@
-import { getCurrentBranch } from '@/utils/git.js';
+import { git } from '@/utils/git.js';
 import { storage } from '@/utils/storage.js';
 import chalk from 'chalk';
 import { Command } from 'commander';
@@ -49,7 +49,7 @@ const start = new Command()
       return;
     }
 
-    const currentBranch = await getCurrentBranch();
+    const currentBranch = await git.getCurrentBranch();
     targetCommit.status = 'in_progress';
     targetCommit.metadata.startedAt = new Date().toISOString();
     targetCommit.metadata.branch = currentBranch;
