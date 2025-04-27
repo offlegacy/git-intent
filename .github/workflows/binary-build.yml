@@ -33,6 +33,11 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
+      - name: Setup Git User
+        run: |
+          git config --global user.email "kangju2000@gmail.com"
+          git config --global user.name "Juhyeok Kang"
+
       - name: Get Version
         id: get_version
         run: |
