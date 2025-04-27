@@ -1,10 +1,11 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
-  "changelog": "@changesets/cli/changelog",
+  "changelog": ["@changesets/changelog-github", { "repo": "offlegacy/git-intent" }],
   "fixed": [["@git-intent/core", "@git-intent/cli"]],
   "linked": [],
   "access": "public",
   "baseBranch": "main",
+  "prettier": false,
   "updateInternalDependencies": "patch",
   "ignore": []
 }
