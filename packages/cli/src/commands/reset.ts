@@ -1,13 +1,24 @@
 import { storage } from '@git-intent/core';
-import chalk from 'chalk';
 import { Command } from 'commander';
+import prompts from 'prompts';
 
 const reset = new Command()
   .command('reset')
-  .description('Reset all intentions')
+  .description('Reset all intents')
   .action(async () => {
+    const response = await prompts({
+      type: 'confirm',
+      name: 'reset',
+      message: 'Are you sure you want to reset all intents?',
+      initial: false,
+    });
+
+    if (!response.reset) {
+      return;
+    }
+
     await storage.clearCommits();
-    console.log(chalk.green('✓ All intentions have been reset'));
+    console.log('All intents reset');
   });
 
 export default reset;

@@ -1,4 +1,3 @@
-import type { IntentionalCommit } from '@git-intent/core';
 import { git, storage } from '@git-intent/core';
 import chalk from 'chalk';
 import { Command } from 'commander';
@@ -6,77 +5,57 @@ import prompts from 'prompts';
 
 const start = new Command()
   .command('start')
-  .description('Start working on an intention')
   .argument('[id]', 'Intent ID')
+  .description('Start working on a planned intent')
   .action(async (id?: string) => {
     const commits = await storage.loadCommits();
-    const createdCommits = commits.filter((c) => c.status === 'created');
-    const currentCommit = commits.find((c) => c.status === 'in_progress');
 
-    if (currentCommit) {
-      console.log(chalk.yellow('You already have an active intention:'));
-      console.log(`ID: ${chalk.blue(currentCommit.id)}`);
-      console.log(`Message: ${currentCommit.message}`);
-      console.log('\nComplete or cancel it before starting a new one.');
-      return;
-    }
-
-    if (createdCommits.length === 0) {
-      console.log('No intentions available to start');
-      console.log('Create one first with `git-intent add`');
-      return;
-    }
-
-    let targetCommit: IntentionalCommit | undefined;
-
-    if (id) {
-      targetCommit = commits.find((c) => c.id === id && c.status === 'created');
-      if (!targetCommit) {
-        console.log(`Intent with ID ${id} not found or already in progress`);
+    let selectedId = id;
+    if (!selectedId) {
+      const createdCommits = commits.filter((c) => c.status === 'created');
+      if (createdCommits.length === 0) {
+        console.log('No created intents found');
         return;
       }
-    } else {
-      const { commitId } = await prompts({
+
+      const response = await prompts({
         type: 'select',
-        name: 'commitId',
-        message: 'Select an intention to start:',
+        name: 'id',
+        message: 'Select an intent to start:',
         choices: createdCommits.map((c) => ({
-          title: `${c.id} - ${c.message}`,
+          title: `${c.message} (${c.id})`,
           value: c.id,
         })),
       });
 
-      if (!commitId) {
-        return;
-      }
-
-      targetCommit = commits.find((c) => c.id === commitId);
+      selectedId = response.id;
     }
 
-    if (!targetCommit) {
+    if (!selectedId) {
+      console.error('No intent selected');
       return;
     }
 
-    // Get current branch name outside of the map function
+    const targetCommit = commits.find((c) => c.id === selectedId);
+
+    if (!targetCommit) {
+      console.error('Intent not found');
+      return;
+    }
+
+    if (targetCommit.status !== 'created') {
+      console.error('Intent is not in created status');
+      return;
+    }
+
     const currentBranch = await git.getCurrentBranch();
+    targetCommit.status = 'in_progress';
+    targetCommit.metadata.startedAt = new Date().toISOString();
+    targetCommit.metadata.branch = currentBranch;
 
-    const updatedCommits: IntentionalCommit[] = commits.map((c) =>
-      c.id === targetCommit.id
-        ? {
-            ...c,
-            status: 'in_progress',
-            metadata: {
-              ...c.metadata,
-              startedAt: new Date().toISOString(),
-              branch: currentBranch,
-            },
-          }
-        : c
-    );
+    await storage.saveCommits(commits);
 
-    await storage.saveCommits(updatedCommits);
-
-    console.log(chalk.green('✓ Intent started:'));
+    console.log(chalk.green('✓ Started working on:'));
     console.log(`ID: ${chalk.blue(targetCommit.id)}`);
     console.log(`Message: ${targetCommit.message}`);
   });

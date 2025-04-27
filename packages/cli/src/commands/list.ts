@@ -4,32 +4,25 @@ import { Command } from 'commander';
 
 const list = new Command()
   .command('list')
-  .alias('ls')
-  .description('List all intentions')
+  .description('List all intentional commits')
   .action(async () => {
     const commits = await storage.loadCommits();
 
     if (commits.length === 0) {
-      console.log('No intentions found');
+      console.log('No intents found');
       return;
     }
 
-    console.log(chalk.blue('Intentions:'));
-    console.log('');
+    console.log('\nCreated:');
+    const createdCommits = commits.filter((commit) => commit.status === 'created');
+    for (const commit of createdCommits) {
+      console.log(chalk.white(`  [${commit.id}] ${commit.message}`));
+    }
 
-    for (const commit of commits) {
-      const status = commit.status === 'in_progress' ? chalk.green('[IN PROGRESS]') : chalk.yellow('[CREATED]');
-      console.log(`${status} ${chalk.blue(commit.id)} - ${commit.message}`);
-
-      if (commit.metadata.createdAt) {
-        console.log(`  Created: ${new Date(commit.metadata.createdAt).toLocaleString()}`);
-      }
-
-      if (commit.metadata.startedAt) {
-        console.log(`  Started: ${new Date(commit.metadata.startedAt).toLocaleString()}`);
-      }
-
-      console.log('');
+    console.log('\nIn Progress:');
+    const inProgressCommits = commits.filter((commit) => commit.status === 'in_progress');
+    for (const commit of inProgressCommits) {
+      console.log(chalk.blue(`  [${commit.id}] ${commit.message}`));
     }
   });
 

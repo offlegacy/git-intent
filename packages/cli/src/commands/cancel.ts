@@ -1,5 +1,4 @@
-import type { IntentionalCommit } from '@git-intent/core';
-import { storage } from '@git-intent/core';
+import { type IntentionalCommit, storage } from '@git-intent/core';
 import chalk from 'chalk';
 import { Command } from 'commander';
 import prompts from 'prompts';

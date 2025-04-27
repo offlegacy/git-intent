@@ -1,144 +1,214 @@
-import { git, storage } from '@git-intent/core';
+import { storage } from '@git-intent/core';
 import chalk from 'chalk';
 import { Command } from 'commander';
+import edit from 'external-editor';
 import prompts from 'prompts';
 
 const divide = new Command()
   .command('divide')
-  .description('Divide current intention into multiple intentions')
+  .description('Divide an intent into smaller parts')
   .action(async () => {
     const commits = await storage.loadCommits();
-    const currentCommit = commits.find((c) => c.status === 'in_progress');
 
-    if (!currentCommit) {
-      console.log('No active intention');
+    if (commits.length === 0) {
+      console.log('No intents found to divide');
       return;
     }
 
-    const status = await git.getStatus();
-    if (status.staged.length === 0) {
-      console.log('No staged changes to divide');
-      return;
-    }
-
-    console.log(chalk.blue('Current staged files:'));
-    for (const file of status.staged) {
-      console.log(`  ${file}`);
-    }
-
-    console.log('\nYou can divide these staged changes into multiple intentions.');
-    console.log('This will create new intentions for each group of files you select.');
-    console.log('The current intention will be updated with the remaining files.\n');
-
-    const { confirm } = await prompts({
-      type: 'confirm',
-      name: 'confirm',
-      message: 'Do you want to divide the current intention?',
-      initial: true,
+    const response = await prompts({
+      type: 'select',
+      name: 'id',
+      message: 'Select an intent to divide:',
+      choices: commits.map((c) => ({
+        title: `[${c.status === 'created' ? 'Created' : 'In Progress'}] ${c.message.split('\n')[0]} (${c.id})`,
+        value: c.id,
+      })),
+      onState: (state) => {
+        if (state.aborted) {
+          process.nextTick(() => {
+            process.exit(0);
+          });
+        }
+      },
     });
 
-    if (!confirm) {
+    const selectedId = response.id;
+    if (!selectedId) {
+      console.log('No intent selected');
       return;
     }
 
-    const stagedFiles = status.staged;
-    const newIntentions: Array<{ message: string; files: string[] }> = [];
-    let remainingFiles = [...stagedFiles];
+    const targetCommit = commits.find((c) => c.id === selectedId);
+    if (!targetCommit) {
+      console.error('Intent not found');
+      return;
+    }
 
-    while (remainingFiles.length > 0) {
-      const { files } = await prompts({
-        type: 'multiselect',
-        name: 'files',
-        message: 'Select files for a new intention (or none to finish):',
-        choices: remainingFiles.map((file) => ({ title: file, value: file })),
-        hint: 'Space to select, Enter to confirm',
+    console.log(chalk.blue('\nOriginal commit:'), targetCommit.message);
+
+    const tasks: string[] = [];
+
+    console.log(chalk.yellow('\nDividing commit into two tasks.'));
+    console.log(
+      chalk.dim(
+        'Tip: Enter a title directly for a simple task, or leave it empty to open an editor for a detailed commit message.'
+      )
+    );
+
+    console.log(chalk.blue('\nFirst task:'));
+    const { taskTitle: firstTaskTitle } = await prompts({
+      type: 'text',
+      name: 'taskTitle',
+      message: 'Task 1 title:',
+      onState: (state) => {
+        if (state.aborted) {
+          process.nextTick(() => {
+            process.exit(0);
+          });
+        }
+      },
+    });
+
+    if (firstTaskTitle && firstTaskTitle.trim() !== '') {
+      tasks.push(firstTaskTitle.trim());
+    } else {
+      console.log(chalk.dim('Opening editor for commit message. Save and close the editor when done.'));
+
+      let initialText = targetCommit.message;
+
+      initialText = `# Enter commit message for the first task\n# Lines starting with # will be ignored\n\n${initialText}`;
+
+      const message = edit.edit(initialText, {
+        postfix: '.git-intent-divide',
       });
 
-      if (!files || files.length === 0) {
-        break;
-      }
+      const fullMessage = message
+        .split('\n')
+        .filter((line) => !line.trim().startsWith('#'))
+        .join('\n')
+        .trim();
 
-      const { message } = await prompts({
-        type: 'text',
-        name: 'message',
-        message: 'Enter a message for this new intention:',
-        validate: (value) => (value.trim() ? true : 'Message is required'),
-      });
-
-      if (!message) {
-        console.log('Cancelled.');
+      if (!fullMessage) {
+        console.log('No message provided for the first task. Operation cancelled.');
         return;
       }
 
-      newIntentions.push({ message, files });
-      remainingFiles = remainingFiles.filter((file) => !files.includes(file));
+      tasks.push(fullMessage);
     }
 
-    if (newIntentions.length === 0) {
-      console.log('No new intentions created. Operation cancelled.');
+    console.log(chalk.blue('\nSecond task:'));
+    const { taskTitle: secondTaskTitle } = await prompts({
+      type: 'text',
+      name: 'taskTitle',
+      message: 'Task 2 title:',
+      onState: (state) => {
+        if (state.aborted) {
+          process.nextTick(() => {
+            process.exit(0);
+          });
+        }
+      },
+    });
+
+    if (secondTaskTitle && secondTaskTitle.trim() !== '') {
+      tasks.push(secondTaskTitle.trim());
+    } else {
+      console.log(chalk.dim('Opening editor for commit message. Save and close the editor when done.'));
+
+      const initialText = '# Enter commit message for the second task\n# Lines starting with # will be ignored\n';
+
+      const message = edit.edit(initialText, {
+        postfix: '.git-intent-divide',
+      });
+
+      const fullMessage = message
+        .split('\n')
+        .filter((line) => !line.trim().startsWith('#'))
+        .join('\n')
+        .trim();
+
+      if (!fullMessage) {
+        console.log('No message provided for the second task. Operation cancelled.');
+        return;
+      }
+
+      tasks.push(fullMessage);
+    }
+
+    console.log(chalk.blue('\nTasks to create:'));
+    tasks.forEach((task, index) => {
+      const title = task.split('\n')[0];
+      console.log(`${index + 1}. ${title}`);
+
+      if (task.includes('\n')) {
+        const preview = task.split('\n').slice(1).join(' ').trim();
+        const shortPreview = preview.length > 60 ? `${preview.substring(0, 57)}...` : preview;
+        if (shortPreview) {
+          console.log(`   ${chalk.dim(shortPreview)}`);
+        }
+      }
+    });
+
+    const { confirmed } = await prompts({
+      type: 'confirm',
+      name: 'confirmed',
+      message: 'Do you want to divide the commit with these tasks?',
+      initial: true,
+      onState: (state) => {
+        if (state.aborted) {
+          process.nextTick(() => {
+            process.exit(0);
+          });
+        }
+      },
+    });
+
+    if (!confirmed) {
+      console.log('Operation cancelled.');
       return;
     }
 
-    // Unstage all files
-    await git.raw(['reset', 'HEAD']);
+    const { shouldRemoveOriginal } = await prompts({
+      type: 'confirm',
+      name: 'shouldRemoveOriginal',
+      message: 'Do you want to remove the original commit?',
+      initial: false,
+      onState: (state) => {
+        if (state.aborted) {
+          process.nextTick(() => {
+            process.exit(0);
+          });
+        }
+      },
+    });
 
-    // Create new intentions
-    for (const intention of newIntentions) {
-      // Stage the files for this intention
-      for (const file of intention.files) {
-        await git.raw(['add', file]);
-      }
-
-      // Create a new intention
+    const newCommitIds: string[] = [];
+    for (const task of tasks) {
       const newCommitId = await storage.addCommit({
-        message: intention.message,
+        message: task,
         status: 'created',
         metadata: {
           createdAt: new Date().toISOString(),
         },
       });
-
-      console.log(chalk.green(`✓ New intention created: ${newCommitId}`));
-      console.log(`Message: ${intention.message}`);
-      console.log(`Files: ${intention.files.join(', ')}`);
-      console.log('');
-
-      // Unstage the files
-      await git.raw(['reset', 'HEAD']);
+      newCommitIds.push(newCommitId);
     }
 
-    // Stage the remaining files for the original intention
-    if (remainingFiles.length > 0) {
-      for (const file of remainingFiles) {
-        await git.raw(['add', file]);
-      }
-
-      console.log(chalk.green('✓ Original intention updated:'));
-      console.log(`ID: ${chalk.blue(currentCommit.id)}`);
-      console.log(`Message: ${currentCommit.message}`);
-      console.log(`Remaining files: ${remainingFiles.join(', ')}`);
-    } else {
-      // If no files remain, ask what to do with the original intention
-      const { action } = await prompts({
-        type: 'select',
-        name: 'action',
-        message: 'What would you like to do with the original intention?',
-        choices: [
-          { title: 'Keep it (empty)', value: 'keep' },
-          { title: 'Delete it', value: 'delete' },
-        ],
-      });
-
-      if (action === 'delete') {
-        const updatedCommits = commits.filter((c) => c.id !== currentCommit.id);
-        await storage.saveCommits(updatedCommits);
-        console.log(chalk.green('✓ Original intention deleted'));
-      } else {
-        console.log(chalk.green('✓ Original intention kept (no files)'));
-      }
+    if (shouldRemoveOriginal) {
+      await storage.deleteCommit(targetCommit.id);
     }
 
-    console.log('\nDivision complete. Use `git-intent start` to start working on any of the new intentions.');
+    console.log(chalk.green('✓ Successfully divided the commit:'));
+    for (let i = 0; i < tasks.length; i++) {
+      const title = tasks[i].split('\n')[0];
+      console.log(`${i + 1}. ${chalk.blue(title)} (ID: ${newCommitIds[i]})`);
+    }
+
+    if (!shouldRemoveOriginal) {
+      console.log(chalk.yellow('\nOriginal commit was kept:'));
+      const originalTitle = targetCommit.message.split('\n')[0];
+      console.log(`${chalk.blue(originalTitle)} (ID: ${targetCommit.id})`);
+    }
   });
 
 export default divide;

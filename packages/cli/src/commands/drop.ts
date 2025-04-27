@@ -1,4 +1,3 @@
-import type { IntentionalCommit } from '@git-intent/core';
 import { storage } from '@git-intent/core';
 import chalk from 'chalk';
 import { Command } from 'commander';
@@ -6,62 +5,60 @@ import prompts from 'prompts';
 
 const drop = new Command()
   .command('drop')
-  .description('Drop an intention')
+  .description('Drop a planned intent')
   .argument('[id]', 'Intent ID')
-  .action(async (id?: string) => {
+  .option('-a, --all', 'Drop all created intents')
+  .action(async (id: string | undefined, options: { all?: boolean }) => {
     const commits = await storage.loadCommits();
+    const createdCommits = commits.filter((c) => c.status === 'created');
 
-    if (commits.length === 0) {
-      console.log('No intentions found');
+    if (options.all) {
+      await storage.saveCommits([]);
+      console.log(chalk.green('✓ All created intents removed'));
       return;
     }
 
-    let targetCommit: IntentionalCommit | undefined;
-
-    if (id) {
-      targetCommit = commits.find((c) => c.id === id);
-      if (!targetCommit) {
-        console.log(`Intent with ID ${id} not found`);
+    let selectedId = id;
+    if (!selectedId) {
+      if (createdCommits.length === 0) {
+        console.log('No created intents found. Nothing to remove.');
         return;
       }
-    } else {
-      const { commitId } = await prompts({
+
+      const response = await prompts({
         type: 'select',
-        name: 'commitId',
-        message: 'Select an intention to drop:',
-        choices: commits.map((c) => ({
-          title: `${c.id} - ${c.status === 'in_progress' ? '[IN PROGRESS] ' : ''}${c.message}`,
+        name: 'id',
+        message: 'Select an intent to remove:',
+        choices: createdCommits.map((c) => ({
+          title: `${c.message} (${c.id})`,
           value: c.id,
         })),
       });
 
-      if (!commitId) {
-        return;
-      }
-
-      targetCommit = commits.find((c) => c.id === commitId);
+      selectedId = response.id;
     }
+
+    if (!selectedId) {
+      console.error('No intent selected');
+      return;
+    }
+
+    const targetCommit = commits.find((c) => c.id === selectedId);
 
     if (!targetCommit) {
+      console.error('Intent not found');
       return;
     }
 
-    const { confirm } = await prompts({
-      type: 'confirm',
-      name: 'confirm',
-      message: `Are you sure you want to drop the intention: "${targetCommit.message}"?`,
-      initial: false,
-    });
-
-    if (!confirm) {
-      console.log('Operation cancelled');
+    if (targetCommit.status !== 'created') {
+      console.error('Can only remove intents in created status');
       return;
     }
 
-    const updatedCommits = commits.filter((c) => c.id !== targetCommit!.id);
+    const updatedCommits = commits.filter((c) => c.id !== selectedId);
     await storage.saveCommits(updatedCommits);
 
-    console.log(chalk.green('✓ Intent dropped:'));
+    console.log(chalk.green('✓ Intent removed:'));
     console.log(`ID: ${chalk.blue(targetCommit.id)}`);
     console.log(`Message: ${targetCommit.message}`);
   });
