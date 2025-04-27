@@ -36,7 +36,7 @@ jobs:
           registry-url: "https://registry.npmjs.org"
 
       - name: Install Dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install
 
       - name: Test CLI execution (from dist)
         run: node packages/cli/dist/index.cjs --version
