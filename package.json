@@ -14,17 +14,24 @@
     "todo-driven"
   ],
   "license": "MIT",
+  "packageManager": "pnpm@10.9.0",
   "scripts": {
-    "dev": "pnpm -r dev",
-    "build": "pnpm -r build",
+    "dev": "turbo dev",
+    "build": "turbo build",
     "format": "biome format",
     "format:fix": "biome format --write",
-    "test": "pnpm -r test"
+    "test": "turbo test",
+    "clean": "turbo clean",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "turbo build && changeset publish",
+    "cli": "pnpm --filter=@git-intent/cli start"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "tsup": "^8.0.2",
-    "typescript": "^5.3.3"
-  },
-  "packageManager": "pnpm@10.3.0"
+    "@changesets/cli": "^2.29.2",
+    "tsup": "^8.4.0",
+    "turbo": "^2.5.2",
+    "typescript": "^5.8.3"
+  }
 }
