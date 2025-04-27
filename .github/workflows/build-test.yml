@@ -24,7 +24,7 @@ jobs:
       max-parallel: 3
       matrix:
         os: [ubuntu-latest, macos-latest]
-        node-version: [16.x, 18.x, 20.x]
+        node-version: [18.x, 20.x]
 
     steps:
       - name: Checkout repository
