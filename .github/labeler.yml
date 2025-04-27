@@ -1,27 +1,27 @@
 cli:
   - changed-files:
-    - any-glob-to-any-file:
-      - 'packages/cli/**/*'
+      - any-glob-to-any-file:
+          - 'packages/cli/**/*'
 
 core:
   - changed-files:
-    - any-glob-to-any-file:
-      - 'packages/core/**/*'
+      - any-glob-to-any-file:
+          - 'packages/core/**/*'
 
 documentation:
   - changed-files:
-    - any-glob-to-any-file:
-      - '**/*.md'
-      - '**/*.mdx'
+      - any-glob-to-any-file:
+          - '**/*.md'
+          - '**/*.mdx'
 
 github-actions:
   - changed-files:
-    - any-glob-to-any-file:
-      - '.github/workflows/**/*'
+      - any-glob-to-any-file:
+          - '.github/workflows/**/*'
 
 dependencies:
   - changed-files:
-    - any-glob-to-any-file:
-      - 'package.json'
-      - 'pnpm-lock.yaml'
-      - '**/package.json'
+      - any-glob-to-any-file:
+          - 'package.json'
+          - 'pnpm-lock.yaml'
+          - '**/package.json'
