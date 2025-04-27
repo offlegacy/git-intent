@@ -61,15 +61,13 @@ jobs:
           echo "checksum=$CHECKSUM" >> $GITHUB_OUTPUT
           echo "::notice::Binary checksum: $CHECKSUM"
 
-      - name: Create GitHub Release
+      - name: Upload Binary to GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION="${{ steps.get_version.outputs.version }}"
-          gh release create v$VERSION \
-            --title "v$VERSION" \
-            --generate-notes \
-            packages/cli/build/git-intent-$VERSION-darwin-amd64.tar.gz
+          # add binary to existing release
+          gh release upload v$VERSION packages/cli/build/git-intent-$VERSION-darwin-amd64.tar.gz
 
       - name: Trigger Homebrew Update
         uses: peter-evans/repository-dispatch@v3
