@@ -1,0 +1,19 @@
+cli:
+  - 'packages/cli/**/*'
+
+core:
+  - 'packages/core/**/*'
+
+documentation:
+  - '**/*.md'
+  - '**/*.mdx'
+
+github-actions:
+  - '.github/workflows/**/*'
+
+dependencies:
+  - 'package.json'
+  - 'pnpm-lock.yaml'
+  - '**/package.json'
+
+
