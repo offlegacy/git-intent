@@ -30,6 +30,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        id: pnpm-install
+
       - name: Setup Node.js & pnpm cache
         uses: actions/setup-node@v4
         with:
@@ -54,4 +58,3 @@ jobs:
         run: |
           chmod +x packages/cli/build/git-intent-macos
           ./packages/cli/build/git-intent-macos --version
-
