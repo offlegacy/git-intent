@@ -6,10 +6,6 @@ core:
 - changed-files:
   - any-glob-to-any-file: ['packages/core/**/*']
 
-documentation:
-- changed-files:
-  - any-glob-to-any-file: ['**/*.md', '**/*.mdx']
-
 github-actions:
 - changed-files:
   - any-glob-to-any-file: ['.github/workflows/**/*']
