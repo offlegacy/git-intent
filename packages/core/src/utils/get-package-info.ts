@@ -3,27 +3,19 @@ import fs from 'fs-extra';
 import type { PackageJson } from 'type-fest';
 
 export function getPackageInfo(): { version: string; description: string } {
-  const possiblePaths = [
-    path.resolve(process.cwd(), 'package.json'),
-    path.resolve(process.cwd(), '..', 'package.json'),
-    path.resolve(process.cwd(), '..', '..', 'package.json'),
-    path.resolve(process.cwd(), '..', '..', '..', 'package.json'),
-  ];
+  try {
+    const packageJsonPath = path.resolve(__dirname, '..', 'package.json');
 
-  for (const packageJsonPath of possiblePaths) {
-    try {
-      if (fs.existsSync(packageJsonPath)) {
-        const packageJson = fs.readJSONSync(packageJsonPath) as PackageJson;
-
-        if (packageJson.name === '@git-intent/cli') {
-          return {
-            version: packageJson.version || '0.0.0',
-            description: packageJson.description || 'Git Intent CLI',
-          };
-        }
+    if (fs.existsSync(packageJsonPath)) {
+      const packageJson = fs.readJSONSync(packageJsonPath) as PackageJson;
+      if (packageJson.name === '@git-intent/core') {
+        return {
+          version: packageJson.version || '0.0.0',
+          description: packageJson.description || 'Git Intent CLI',
+        };
       }
-    } catch (error) {}
-  }
+    }
+  } catch (error) {}
 
   return {
     version: '0.0.0',
