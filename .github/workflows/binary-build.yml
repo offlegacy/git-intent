@@ -3,12 +3,6 @@ name: Binary Build & Release
 on:
   repository_dispatch:
     types: [trigger-binary-build]
-  workflow_dispatch:
-    inputs:
-      version:
-        description: "Version to build binary for"
-        required: true
-        type: string
 
 permissions:
   contents: write
@@ -34,6 +28,7 @@ jobs:
         with:
           node-version: 20.x
           cache: "pnpm"
+          registry-url: "https://registry.npmjs.org"
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
@@ -41,11 +36,7 @@ jobs:
       - name: Get Version
         id: get_version
         run: |
-          if [ "${{ github.event_name }}" == "repository_dispatch" ]; then
-            echo "version=${{ github.event.client_payload.version }}" >> $GITHUB_OUTPUT
-          else
-            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
-          fi
+          echo "version=${{ github.event.client_payload.version }}" >> $GITHUB_OUTPUT
 
       - name: Build Packages
         run: pnpm build
