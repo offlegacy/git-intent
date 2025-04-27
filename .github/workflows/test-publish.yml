@@ -1,0 +1,93 @@
+name: Test NPM Publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      npm_token:
+        description: 'NPM Token (optional, will use secrets.NPM_TOKEN if not provided)'
+        required: false
+        type: string
+      dry_run:
+        description: 'Dry run (no actual publish)'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+jobs:
+  test-publish:
+    name: Test NPM Publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        id: pnpm-install
+
+      - name: Setup Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: "pnpm"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Debug - Check NPM Configuration
+        run: |
+          echo "NPM Registry:"
+          npm config get registry
+          
+          echo "NPM Auth Token exists:"
+          if [ -n "${{ secrets.NPM_TOKEN }}" ]; then
+            echo "Yes, NPM_TOKEN secret exists"
+          else
+            echo "No, NPM_TOKEN secret is missing"
+          fi
+          
+          echo "NPM Config File:"
+          cat ~/.npmrc || echo "No .npmrc file found"
+
+      - name: Debug - Check NPM Login Status
+        env:
+          NODE_AUTH_TOKEN: ${{ inputs.npm_token || secrets.NPM_TOKEN }}
+        run: |
+          echo "Attempting npm whoami..."
+          npm whoami || echo "Not logged in or token is invalid"
+
+      - name: Debug - Check Package Info
+        run: |
+          echo "Package info for git-intent:"
+          npm info git-intent || echo "Package not found or other error"
+          
+          echo "Package info for @offlegacy/git-intent-core:"
+          npm info @offlegacy/git-intent-core || echo "Package not found or other error"
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Test Release (Dry Run)
+        if: inputs.dry_run == 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ inputs.npm_token || secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ inputs.npm_token || secrets.NPM_TOKEN }}
+        run: |
+          echo "Running in DRY RUN mode (no actual publish)"
+          pnpm changeset version --snapshot test
+          echo "Testing publish with --no-git-tag --dry-run flags"
+          pnpm changeset publish --no-git-tag --dry-run
+
+      - name: Actual Release
+        if: inputs.dry_run == 'false'
+        env:
+          NODE_AUTH_TOKEN: ${{ inputs.npm_token || secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ inputs.npm_token || secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Running ACTUAL PUBLISH (not a dry run)"
+          pnpm release
