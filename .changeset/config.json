@@ -6,6 +6,7 @@
   "access": "public",
   "baseBranch": "main",
   "prettier": false,
+  "commit": false,
   "updateInternalDependencies": "patch",
   "ignore": []
 }
