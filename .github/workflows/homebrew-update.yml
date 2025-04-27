@@ -1,0 +1,27 @@
+name: Homebrew Formula Update
+
+on:
+  repository_dispatch:
+    types: [trigger-homebrew-update]
+
+permissions:
+  contents: read
+
+jobs:
+  update-formula:
+    name: Update Homebrew Formula
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Version and Checksum
+        id: get_info
+        run: |
+          echo "version=${{ github.event.client_payload.version }}" >> $GITHUB_OUTPUT
+          echo "checksum=${{ github.event.client_payload.sha256 }}" >> $GITHUB_OUTPUT
+
+      - name: Trigger Homebrew Formula Update
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+          repository: offlegacy/homebrew-git-intent
+          event-type: update-formula
+          client-payload: '{"version": "${{ steps.get_info.outputs.version }}", "sha256": "${{ steps.get_info.outputs.checksum }}"}'

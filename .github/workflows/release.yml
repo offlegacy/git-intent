@@ -1,32 +1,25 @@
-name: Release
+name: Changeset Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: "Version to release (e.g., 1.0.0)"
-        required: true
-        type: string
-      skip_npm:
-        description: 'Skip npm publish'
-        type: boolean
-        default: false
-      skip_homebrew:
-        description: 'Skip Homebrew formula update'
-        type: boolean
-        default: false
+  push:
+    branches:
+      - main
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 permissions:
   contents: write
   packages: write
-  actions: write
+  pull-requests: write
+  id-token: write # npm provenance
 
 jobs:
   release:
-    name: Release
+    name: Changeset Release
     runs-on: ubuntu-latest
+    outputs:
+      published: ${{ steps.changesets.outputs.published }}
+      version: ${{ steps.changesets.outputs.version }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -43,53 +36,30 @@ jobs:
           registry-url: "https://registry.npmjs.org"
 
       - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install
 
-      - name: Update Version
-        if: ${{ !inputs.skip_npm }}
+      - name: Setup Git User
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          npm version ${{ github.event.inputs.version }} -m "Release v%s"
-          git push origin main
-          git push --tags
+          git config --global user.email "kangju2000@gmail.com"
+          git config --global user.name "Juhyeok Kang"
 
-      - name: Build Package
-        run: pnpm build
-
-      - name: Build Binary (macOS)
-        run: pnpm pkg:build:macos
-
-      - name: Create Checksum
-        id: create_checksum
-        run: |
-          cd build
-          ls -la
-          cp git-intent-macos git-intent
-          tar -czf git-intent-${{ github.event.inputs.version }}-darwin-amd64.tar.gz git-intent
-          echo "checksum=$(shasum -a 256 git-intent-${{ github.event.inputs.version }}-darwin-amd64.tar.gz | awk '{print $1}')" >> $GITHUB_OUTPUT
-
-      - name: Publish to npm
-        if: ${{ !inputs.skip_npm }}
-        run: pnpm publish --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Create GitHub Release
-        if: ${{ !inputs.skip_npm }}
+      - name: Create Release Pull Request or Publish to npm
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: pnpm release
+          version: pnpm version-packages
+          commit: "chore: version packages"
+          title: "chore: version packages"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release create v${{ github.event.inputs.version }} \
-            --title "v${{ github.event.inputs.version }}" \
-            --generate-notes \
-            build/git-intent-${{ github.event.inputs.version }}-darwin-amd64.tar.gz
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Update Homebrew formula
-        if: ${{ !inputs.skip_homebrew }}
+      # Dispatch to other workflows if published
+      - name: Trigger Binary Build
+        if: steps.changesets.outputs.published == 'true'
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.PAT }}
-          repository: offlegacy/homebrew-git-intent
-          event-type: update-formula
-          client-payload: '{"version": "${{ github.event.inputs.version }}", "sha256": "${{ steps.create_checksum.outputs.checksum }}"}'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          event-type: trigger-binary-build
+          client-payload: '{"version": "${{ steps.changesets.outputs.version }}"}'

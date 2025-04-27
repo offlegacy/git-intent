@@ -1,5 +1,4 @@
-import { git } from '@/utils/git.js';
-import { storage } from '@/utils/storage.js';
+import { git, storage } from '@git-intent/core';
 import chalk from 'chalk';
 import { Command } from 'commander';
 

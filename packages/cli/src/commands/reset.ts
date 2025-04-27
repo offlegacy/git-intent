@@ -1,4 +1,4 @@
-import { storage } from '@/utils/storage.js';
+import { storage } from '@git-intent/core';
 import { Command } from 'commander';
 import prompts from 'prompts';
 

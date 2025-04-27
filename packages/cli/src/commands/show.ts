@@ -1,4 +1,4 @@
-import { storage } from '@/utils/storage.js';
+import { storage } from '@git-intent/core';
 import chalk from 'chalk';
 import { Command } from 'commander';
 
@@ -8,7 +8,6 @@ const show = new Command()
   .action(async () => {
     const commits = await storage.loadCommits();
     const currentCommit = commits.find((c) => c.status === 'in_progress');
-
     if (!currentCommit) {
       console.log('No active intention');
       return;

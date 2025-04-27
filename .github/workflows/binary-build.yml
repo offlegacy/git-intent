@@ -1,0 +1,79 @@
+name: Binary Build & Release
+
+on:
+  repository_dispatch:
+    types: [trigger-binary-build]
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build:
+    name: Build Binary
+    runs-on: ubuntu-latest
+    outputs:
+      checksum: ${{ steps.create_checksum.outputs.checksum }}
+      version: ${{ steps.get_version.outputs.version }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        id: pnpm-install
+
+      - name: Setup Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: "pnpm"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Setup Git User
+        run: |
+          git config --global user.email "kangju2000@gmail.com"
+          git config --global user.name "Juhyeok Kang"
+
+      - name: Get Version
+        id: get_version
+        run: |
+          echo "version=${{ github.event.client_payload.version }}" >> $GITHUB_OUTPUT
+
+      - name: Build Packages
+        run: pnpm build
+
+      - name: Build Binary (macOS)
+        run: pnpm --filter "@git-intent/cli" pkg:build:macos
+
+      - name: Create Checksum
+        id: create_checksum
+        run: |
+          cd packages/cli/build
+          ls -la
+          cp git-intent-macos git-intent
+          VERSION="${{ steps.get_version.outputs.version }}"
+          tar -czf git-intent-$VERSION-darwin-amd64.tar.gz git-intent
+          CHECKSUM=$(shasum -a 256 git-intent-$VERSION-darwin-amd64.tar.gz | awk '{print $1}')
+          echo "checksum=$CHECKSUM" >> $GITHUB_OUTPUT
+          echo "::notice::Binary checksum: $CHECKSUM"
+
+      - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          gh release create v$VERSION \
+            --title "v$VERSION" \
+            --generate-notes \
+            packages/cli/build/git-intent-$VERSION-darwin-amd64.tar.gz
+
+      - name: Trigger Homebrew Update
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          event-type: trigger-homebrew-update
+          client-payload: '{"version": "${{ steps.get_version.outputs.version }}", "sha256": "${{ steps.create_checksum.outputs.checksum }}"}'

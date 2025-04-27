@@ -1,8 +1,7 @@
 #!/usr/bin/env node
+import { getPackageInfo, storage } from '@git-intent/core';
 import { program } from 'commander';
 import * as command from './commands/index.js';
-import { getPackageInfo } from './utils/get-package-info.js';
-import { storage } from './utils/storage.js';
 
 (async () => {
   await storage.initializeRefs();
