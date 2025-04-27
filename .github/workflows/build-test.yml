@@ -38,6 +38,9 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
+      - name: Build Packages
+        run: pnpm build
+
       - name: Test CLI execution (from dist)
         run: node packages/cli/dist/index.cjs --version
       
