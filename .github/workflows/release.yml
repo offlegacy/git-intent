@@ -53,7 +53,7 @@ jobs:
           title: "chore: version packages"
           setupGitUser: false
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # Dispatch to other workflows if published
