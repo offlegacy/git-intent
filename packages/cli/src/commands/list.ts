@@ -1,4 +1,4 @@
-import { storage } from '@git-intent/core';
+import { storage } from '@offlegacy/git-intent-core';
 import chalk from 'chalk';
 import { Command } from 'commander';
 

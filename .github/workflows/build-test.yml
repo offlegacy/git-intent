@@ -54,7 +54,7 @@ jobs:
 
       - name: Build macOS binary
         if: runner.os == 'macOS'
-        run: pnpm --filter "@git-intent/cli" pkg:build:macos
+        run: pnpm --filter "git-intent" pkg:build:macos
 
       - name: Test macOS binary
         if: runner.os == 'macOS'

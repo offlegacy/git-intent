@@ -24,7 +24,7 @@
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "turbo build && changeset publish",
-    "cli": "pnpm --filter=@git-intent/cli start"
+    "cli": "pnpm --filter='git-intent' start"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",

@@ -8,7 +8,7 @@ export function getPackageInfo(): { version: string; description: string } {
 
     if (fs.existsSync(packageJsonPath)) {
       const packageJson = fs.readJSONSync(packageJsonPath) as PackageJson;
-      if (packageJson.name === '@git-intent/core') {
+      if (packageJson.name === '@offlegacy/git-intent-core') {
         return {
           version: packageJson.version || '0.0.0',
           description: packageJson.description || 'Git Intent CLI',

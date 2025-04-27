@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { getPackageInfo, storage } from '@git-intent/core';
+import { getPackageInfo, storage } from '@offlegacy/git-intent-core';
 import { program } from 'commander';
 import * as command from './commands/index.js';
 
