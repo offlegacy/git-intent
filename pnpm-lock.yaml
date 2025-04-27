@@ -29,7 +29,7 @@ importers:
 
   packages/cli:
     dependencies:
-      '@git-intent/core':
+      '@offlegacy/git-intent-core':
         specifier: workspace:*
         version: link:../core
       chalk:

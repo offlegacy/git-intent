@@ -1,5 +1,5 @@
 {
-  "name": "git-intent",
+  "name": "root",
   "description": "Git workflow tool for intentional commits — define your commit intentions first for clearer, more atomic changes.",
   "private": true,
   "keywords": [
@@ -24,7 +24,7 @@
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "turbo build && changeset publish",
-    "cli": "pnpm --filter=@git-intent/cli start"
+    "cli": "pnpm --filter='git-intent' start"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",

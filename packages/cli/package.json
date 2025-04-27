@@ -1,6 +1,6 @@
 {
-  "name": "@git-intent/cli",
-  "version": "0.0.11",
+  "name": "git-intent",
+  "version": "0.0.10",
   "description": "Git workflow tool for intentional commits — define your commit intentions first for clearer, more atomic changes.",
   "keywords": [
     "git",
@@ -13,9 +13,7 @@
     "todo-driven"
   ],
   "license": "MIT",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "type": "module",
   "bin": {
     "git-intent": "./dist/index.cjs"
@@ -35,13 +33,11 @@
     "test:ui": "vitest --ui"
   },
   "pkg": {
-    "assets": [
-      "dist/**/*"
-    ],
+    "assets": ["dist/**/*"],
     "outputPath": "build"
   },
   "dependencies": {
-    "@git-intent/core": "workspace:*",
+    "@offlegacy/git-intent-core": "workspace:*",
     "chalk": "^4.1.2",
     "commander": "^13.1.0",
     "external-editor": "^3.1.0",

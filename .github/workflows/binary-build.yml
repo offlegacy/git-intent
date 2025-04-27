@@ -47,7 +47,7 @@ jobs:
         run: pnpm build
 
       - name: Build Binary (macOS)
-        run: pnpm --filter "@git-intent/cli" pkg:build:macos
+        run: pnpm --filter "git-intent" pkg:build:macos
 
       - name: Create Checksum
         id: create_checksum
