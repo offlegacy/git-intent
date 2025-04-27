@@ -1,68 +1,57 @@
-name: Build and Execution Test
+name: CI - Build & Test
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
-  actions: write
 
 jobs:
-  test-build-and-run:
-    name: Test Build and Run
+  test:
+    name: Build & Test (OS=${{ matrix.os }}, Node=${{ matrix.node-version }})
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
+      max-parallel: 3
       matrix:
         os: [ubuntu-latest, macos-latest]
         node-version: [16.x, 18.x, 20.x]
-    
+
     steps:
-      - name: Checkout Repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        id: pnpm-install
-
-      - name: Setup Node.js 20.x
+      - name: Setup Node.js & pnpm cache
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: ${{ matrix.node-version }}
           cache: "pnpm"
-          registry-url: "https://registry.npmjs.org"
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: pnpm install
 
-      - name: Build Packages
+      - name: Build packages
         run: pnpm build
 
-      - name: Setup Git User
-        run: |
-          git config --global user.email "kangju2000@gmail.com"
-          git config --global user.name "Juhyeok Kang"
-
-      - name: Test CLI execution (from dist)
+      - name: Test CLI (Node.js)
         run: node packages/cli/dist/index.cjs --version
-      
-      - name: Build binary (macOS only)
-        if: matrix.os == 'macos-latest'
+
+      - name: Build macOS binary
+        if: runner.os == 'macOS'
         run: pnpm --filter "@git-intent/cli" pkg:build:macos
-      
-      - name: Test binary execution (macOS only)
-        if: matrix.os == 'macos-latest'
+
+      - name: Test macOS binary
+        if: runner.os == 'macOS'
         run: |
           chmod +x packages/cli/build/git-intent-macos
           ./packages/cli/build/git-intent-macos --version
 
-      - name: Upload artifacts
-        if: matrix.os == 'macos-latest' && matrix.node-version == '20.x'
-        uses: actions/upload-artifact@v4
-        with:
-          name: git-intent-macos
-          path: packages/cli/build/git-intent-macos
-          retention-days: 7
