@@ -1,6 +1,6 @@
 {
   "name": "git-intent",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Git workflow tool for intentional commits — define your commit intentions first for clearer, more atomic changes.",
   "keywords": [
     "git",
