@@ -1,5 +1,12 @@
 # @offlegacy/git-intent-core
 
+## 0.0.13
+### Patch Changes
+
+
+
+- [#20](https://github.com/offlegacy/git-intent/pull/20) [`d21af03`](https://github.com/offlegacy/git-intent/commit/d21af0370b1cbdebe9bfc29f336585a39a2e25a3) Thanks [@kangju2000](https://github.com/kangju2000)! - chore: remove vitest and simplify package configuration
+
 ## 0.0.12
 ### Patch Changes
 
