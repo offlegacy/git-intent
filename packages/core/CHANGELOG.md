@@ -1,5 +1,12 @@
 # @offlegacy/git-intent-core
 
+## 0.0.13
+### Patch Changes
+
+
+
+- [#15](https://github.com/offlegacy/git-intent/pull/15) [`fe0f25b`](https://github.com/offlegacy/git-intent/commit/fe0f25bd0632f1fc6a2e37932b6eac93c417565b) Thanks [@kangju2000](https://github.com/kangju2000)! - chore: bump version to v0.0.13 for changeset version testing
+
 ## 0.0.12
 ### Patch Changes
 
