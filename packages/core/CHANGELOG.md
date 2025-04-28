@@ -1,19 +1,5 @@
 # @offlegacy/git-intent-core
 
-## 0.0.13
-### Patch Changes
-
-
-
-- [#15](https://github.com/offlegacy/git-intent/pull/15) [`fe0f25b`](https://github.com/offlegacy/git-intent/commit/fe0f25bd0632f1fc6a2e37932b6eac93c417565b) Thanks [@kangju2000](https://github.com/kangju2000)! - chore: bump version to v0.0.13 for changeset version testing
-
-## 0.0.12
-### Patch Changes
-
-
-
-- [#13](https://github.com/offlegacy/git-intent/pull/13) [`f53d476`](https://github.com/offlegacy/git-intent/commit/f53d47670edc7f59e0a1d8bac2ab830d80a6ff14) Thanks [@kangju2000](https://github.com/kangju2000)! - fix: update binary-build workflow to add binaries to existing Changeset releases
-
 ## 0.0.11
 ### Patch Changes
 
