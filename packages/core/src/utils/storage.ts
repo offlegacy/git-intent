@@ -3,8 +3,8 @@ import fs from 'fs-extra';
 import type { IntentionalCommit, StorageData } from '../types/intent.js';
 import { generateId } from './generateId.js';
 import { getPackageInfo } from './get-package-info.js';
-import { git } from './git.js';
 import { gitRefs } from './git-refs.js';
+import { git } from './git.js';
 
 export class GitIntentionalCommitStorage {
   private static instance: GitIntentionalCommitStorage;
@@ -13,8 +13,8 @@ export class GitIntentionalCommitStorage {
   private readonly GIT_DIR = '.git';
   private gitRootCache: string | undefined;
 
-  private constructor() {
-    this.storageFilename = process.env.VITEST ? 'test_intents.json' : 'intents.json';
+  private constructor(storageFilename = 'intents.json') {
+    this.storageFilename = storageFilename;
   }
 
   static getInstance(): GitIntentionalCommitStorage {
