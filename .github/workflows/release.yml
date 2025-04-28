@@ -56,12 +56,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      # Dispatch to other workflows if published
-      - name: Trigger Binary Build
-        if: steps.changesets.outputs.published == 'true'
-        uses: peter-evans/repository-dispatch@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          event-type: trigger-binary-build
-          client-payload: '{"version": "${{ steps.changesets.outputs.version }}"}'
