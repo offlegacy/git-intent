@@ -1,5 +1,4 @@
-// TODO: 'completed' | 'cancelled'
-export type IntentStatus = 'created' | 'in_progress';
+export type IntentStatus = 'created' | 'in_progress' | 'completed' | 'cancelled';
 
 export type IntentionalCommit = {
   id: string;
@@ -8,9 +7,11 @@ export type IntentionalCommit = {
   metadata: {
     createdAt: string;
     startedAt?: string;
-    // completedAt?: string;
-    // cancelledAt?: string;
+    completedAt?: string;
+    cancelledAt?: string;
     branch?: string;
+    author?: string;
+    tags?: string[];
   };
 };
 

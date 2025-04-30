@@ -1,4 +1,4 @@
-import { git } from './git.js';
+import { gitService } from './service.js';
 
 class GitRefsService {
   private static instance: GitRefsService;
@@ -16,7 +16,7 @@ class GitRefsService {
     if (!treeContent || treeContent.trim() === '') {
       throw new Error('Invalid tree content: tree content cannot be empty');
     }
-    return git.execGit(['mktree'], { input: treeContent, cwd });
+    return gitService.execGit(['mktree'], { input: treeContent, cwd });
   }
 
   async createCommitTree(treeHash: string, message: string, cwd?: string): Promise<string> {
@@ -25,7 +25,7 @@ class GitRefsService {
     }
 
     try {
-      const result = git.execGit(['commit-tree', treeHash, '-m', message], { cwd });
+      const result = gitService.execGit(['commit-tree', treeHash, '-m', message], { cwd });
 
       if (!result || result.trim() === '') {
         throw new Error(`Failed to create commit tree from hash: ${treeHash}`);
@@ -43,16 +43,16 @@ class GitRefsService {
       throw new Error(`Invalid commit hash: commit hash cannot be empty for ref ${refName}`);
     }
 
-    await git.raw(['update-ref', refName, commitHash], cwd);
+    await gitService.raw(['update-ref', refName, commitHash], cwd);
   }
 
   async deleteRef(refName: string, cwd?: string): Promise<void> {
-    await git.raw(['update-ref', '-d', refName], cwd);
+    await gitService.raw(['update-ref', '-d', refName], cwd);
   }
 
   async checkRefExists(refName: string, cwd?: string): Promise<boolean> {
     try {
-      await git.raw(['show-ref', '--verify', refName], cwd);
+      await gitService.raw(['show-ref', '--verify', refName], cwd);
       return true;
     } catch {
       return false;
@@ -61,7 +61,7 @@ class GitRefsService {
 
   async showRef(refPath: string, cwd?: string): Promise<string> {
     try {
-      return await git.raw(['show', refPath], cwd);
+      return await gitService.raw(['show', refPath], cwd);
     } catch (error) {
       throw new Error(`Failed to show ref: ${refPath}`);
     }
