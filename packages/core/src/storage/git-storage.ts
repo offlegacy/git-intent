@@ -95,18 +95,6 @@ export class GitIntentionalCommitStorage implements IntentStorage {
     }
   }
 
-  private migrateData(data: any): StorageData {
-    const currentVersion = getPackageInfo().version;
-    const dataVersion = data.version || '0.0.0';
-
-    if (dataVersion !== currentVersion) {
-      console.log(`Migrating data from version ${dataVersion} to ${currentVersion}`);
-      data.version = currentVersion;
-    }
-
-    return data as StorageData;
-  }
-
   async loadCommits(): Promise<IntentionalCommit[]> {
     try {
       const root = await this.getGitRoot();
@@ -114,12 +102,12 @@ export class GitIntentionalCommitStorage implements IntentStorage {
 
       try {
         const result = await gitRefs.showRef(`${this.config.refsPrefix}/commits:${this.config.storageFilename}`, root);
-        const data = this.migrateData(JSON.parse(result));
+        const data = JSON.parse(result);
         return data.commits;
       } catch (error) {
         const commitsFile = await this.getCommitsFile();
         try {
-          const data = this.migrateData(await fs.readJSON(commitsFile));
+          const data = await fs.readJSON(commitsFile);
           return data.commits;
         } catch (fileError) {
           throw new GitIntentError(

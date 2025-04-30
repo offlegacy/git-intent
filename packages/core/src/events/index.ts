@@ -5,8 +5,11 @@ export class TypedEventEmitter<T extends EventMap> {
   private listeners: Partial<Record<keyof T, EventHandler[]>> = {};
 
   on<K extends keyof T>(event: K, handler: EventHandler<T[K]>): void {
-    const handlers = this.listeners[event] || (this.listeners[event] = []);
-    handlers.push(handler as EventHandler);
+    if (!this.listeners[event]) {
+      this.listeners[event] = [];
+    }
+
+    this.listeners[event].push(handler as EventHandler);
   }
 
   off<K extends keyof T>(event: K, handler?: EventHandler<T[K]>): void {
