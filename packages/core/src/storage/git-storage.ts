@@ -1,7 +1,6 @@
 import path from 'node:path';
 import fs from 'fs-extra';
 import { GitIntentError } from '../errors/index.js';
-import { assert, assertDefined, assertNonEmptyString, withErrorHandling, createErrorHandler } from '../errors/handlers.js';
 import { type TypedEventEmitter, createEmitter } from '../events/index.js';
 import { gitService } from '../git/index.js';
 import { gitRefs } from '../git/refs.js';
