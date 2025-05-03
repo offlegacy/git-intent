@@ -6,9 +6,9 @@ core:
 - changed-files:
   - any-glob-to-any-file: ['packages/core/**/*']
 
-documentation:
+vscode-ext:
 - changed-files:
-  - any-glob-to-any-file: ['!changeset/**/*.md', '**/*.md', '**/*.mdx']
+  - any-glob-to-any-file: ['packages/git-intent-vscode/**/*']
 
 github-actions:
 - changed-files:
@@ -17,3 +17,4 @@ github-actions:
 dependencies:
 - changed-files:
   - any-glob-to-any-file: ['package.json', 'pnpm-lock.yaml', '**/package.json']
+
