@@ -2,8 +2,6 @@
 
 set -e
 
-echo "Installing git-intent..."
-
 # Check if Homebrew is installed
 if ! command -v brew &> /dev/null; then
   echo "Error: Homebrew is required but not installed."
