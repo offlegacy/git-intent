@@ -11,11 +11,16 @@
       "persistent": true
     },
     "test": {
-      "dependsOn": ["build"],
+      "dependsOn": ["^build"],
       "inputs": ["src/**/*.tsx", "src/**/*.ts", "test/**/*.ts", "test/**/*.tsx"]
     },
     "clean": {
       "cache": false
+    },
+    "type-check": {
+      "dependsOn": ["^build"],
+      "inputs": ["src/**/*.tsx", "src/**/*.ts", "test/**/*.ts", "test/**/*.tsx"],
+      "outputs": []
     }
   }
 }
