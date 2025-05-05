@@ -8,7 +8,9 @@ core:
 
 documentation:
 - changed-files:
-  - any-glob-to-any-file: ['!.changeset/*.md', '**/*.md', '**/*.mdx']
+  - all-globs-to-any-file: ['**/*.md', '!.changeset/*.md']
+- changed-files:
+  - any-glob-to-any-file: ['**/*.mdx']
 
 github-actions:
 - changed-files:
