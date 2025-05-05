@@ -16,6 +16,10 @@
     },
     "clean": {
       "cache": false
+    },
+    "type-check": {
+      "inputs": ["src/**/*.tsx", "src/**/*.ts", "test/**/*.ts", "test/**/*.tsx"],
+      "outputs": []
     }
   }
 }
