@@ -3,19 +3,19 @@ import { type SimpleGit, simpleGit } from 'simple-git';
 import { GitError } from '../errors/index.js';
 import type { GitServiceInterface } from './types.js';
 
-class GitService implements GitServiceInterface {
+export class GitService implements GitServiceInterface {
   private static instance: GitService;
   private gitInstances: Map<string, SimpleGit> = new Map();
   private defaultGit: SimpleGit;
 
-  private constructor() {
-    this.defaultGit = simpleGit();
-    this.gitInstances.set('default', this.defaultGit);
+  private constructor(cwd?: string) {
+    this.defaultGit = simpleGit(cwd);
+    this.gitInstances.set(cwd || 'default', this.defaultGit);
   }
 
-  static getInstance(): GitService {
+  static getInstance(cwd?: string): GitService {
     if (!GitService.instance) {
-      GitService.instance = new GitService();
+      GitService.instance = new GitService(cwd);
     }
     return GitService.instance;
   }

@@ -78,6 +78,10 @@ importers:
         version: 4.40.1
 
   packages/git-intent-vscode:
+    dependencies:
+      '@offlegacy/git-intent-core':
+        specifier: workspace:*
+        version: link:../core
     devDependencies:
       '@types/vscode':
         specifier: ^1.99.0

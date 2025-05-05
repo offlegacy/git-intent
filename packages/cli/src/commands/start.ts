@@ -1,4 +1,4 @@
-import { git, storage } from '@offlegacy/git-intent-core';
+import { gitService, storage } from '@offlegacy/git-intent-core';
 import chalk from 'chalk';
 import { Command } from 'commander';
 import prompts from 'prompts';
@@ -48,7 +48,7 @@ const start = new Command()
       return;
     }
 
-    const currentBranch = await git.getCurrentBranch();
+    const currentBranch = await gitService.getCurrentBranch();
     targetCommit.status = 'in_progress';
     targetCommit.metadata.startedAt = new Date().toISOString();
     targetCommit.metadata.branch = currentBranch;

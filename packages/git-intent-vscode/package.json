@@ -1,21 +1,128 @@
 {
   "name": "git-intent-vscode",
-  "displayName": "git-intent-vscode",
+  "displayName": "Git Intent",
   "description": "Git workflow tool for intentional commits — define your commit intentions first for clearer, more atomic changes.",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.98.0"
   },
-  "categories": ["Other"],
-  "activationEvents": [],
+  "categories": ["SCM Providers", "Other"],
+  "activationEvents": ["onStartupFinished"],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "git-intent-vscode.helloWorld",
-        "title": "Hello World"
+        "command": "git-intent-vscode.start",
+        "title": "Git Intent: Start"
+      },
+      {
+        "command": "git-intent-vscode.addIntent",
+        "title": "Git Intent: Add New Intent",
+        "icon": "$(add)"
+      },
+      {
+        "command": "git-intent-vscode.startIntent",
+        "title": "Git Intent: Start Working on Intent",
+        "icon": "$(play)"
+      },
+      {
+        "command": "git-intent-vscode.commitIntent",
+        "title": "Git Intent: Commit Intent",
+        "icon": "$(check)"
+      },
+      {
+        "command": "git-intent-vscode.cancelIntent",
+        "title": "Git Intent: Cancel Intent",
+        "icon": "$(circle-slash)"
+      },
+      {
+        "command": "git-intent-vscode.deleteIntent",
+        "title": "Git Intent: Delete Intent",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "git-intent-vscode.refreshIntents",
+        "title": "Git Intent: Refresh Intents",
+        "icon": "$(refresh)"
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "git-intent-sidebar",
+          "title": "Git Intent",
+          "icon": "assets/icons/icon.png"
+        }
+      ]
+    },
+    "views": {
+      "git-intent-sidebar": [
+        {
+          "id": "git-intent-view",
+          "name": "Intents",
+          "icon": "$(git-branch)",
+          "type": "tree"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "git-intent-vscode.addIntent",
+          "when": "view == git-intent-view",
+          "group": "navigation@1"
+        },
+        {
+          "command": "git-intent-vscode.refreshIntents",
+          "when": "view == git-intent-view",
+          "group": "navigation@2"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "git-intent-vscode.startIntent",
+          "when": "view == git-intent-view && viewItem == intent.created",
+          "group": "inline"
+        },
+        {
+          "command": "git-intent-vscode.commitIntent",
+          "when": "view == git-intent-view && viewItem == intent.in_progress",
+          "group": "inline"
+        },
+        {
+          "command": "git-intent-vscode.cancelIntent",
+          "when": "view == git-intent-view && viewItem == intent.in_progress",
+          "group": "inline"
+        },
+        {
+          "command": "git-intent-vscode.deleteIntent",
+          "when": "view == git-intent-view && viewItem =~ /intent\\.(created|completed|cancelled)/",
+          "group": "inline"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "git-intent-vscode.startIntent",
+          "when": "workspaceHasGit"
+        },
+        {
+          "command": "git-intent-vscode.commitIntent",
+          "when": "workspaceHasGit"
+        },
+        {
+          "command": "git-intent-vscode.cancelIntent",
+          "when": "workspaceHasGit"
+        },
+        {
+          "command": "git-intent-vscode.deleteIntent",
+          "when": "false"
+        },
+        {
+          "command": "git-intent-vscode.refreshIntents",
+          "when": "workspaceHasGit"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "pnpm run package",
@@ -29,6 +136,9 @@
     "pretest": "pnpm run compile-tests && pnpm run compile",
     "check-types": "tsc --noEmit",
     "test": "vscode-test"
+  },
+  "dependencies": {
+    "@offlegacy/git-intent-core": "workspace:*"
   },
   "devDependencies": {
     "@types/vscode": "^1.99.0",
