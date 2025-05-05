@@ -1,7 +1,6 @@
 {
   "name": "@offlegacy/git-intent-core",
   "version": "0.0.13",
-  "private": true,
   "description": "Core functionality for git-intent",
   "type": "module",
   "main": "dist/index.cjs",
