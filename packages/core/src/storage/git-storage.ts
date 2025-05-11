@@ -1,6 +1,6 @@
 import path from 'node:path';
 import fs from 'fs-extra';
-import { GitIntentError } from '../errors/index.js';
+import { GitError, GitIntentError } from '../errors/index.js';
 import { type TypedEventEmitter, createEmitter } from '../events/index.js';
 import { gitService } from '../git/index.js';
 import { gitRefs } from '../git/refs.js';
@@ -40,11 +40,11 @@ export class GitIntentionalCommitStorage implements IntentStorage {
     this.eventEmitter.off(event, handler);
   }
 
-  async getGitRoot(): Promise<string> {
+  async getGitRoot(cwd?: string): Promise<string> {
     if (this.gitRootCache) return this.gitRootCache;
 
     try {
-      const isRepo = await gitService.checkIsRepo();
+      const isRepo = await gitService.checkIsRepo(cwd);
       if (!isRepo) {
         throw new GitIntentError(
           'git-intent can only be used within a Git repository. Please check if the current directory is a Git repository or initialize one with `git init`.',
@@ -52,23 +52,23 @@ export class GitIntentionalCommitStorage implements IntentStorage {
         );
       }
 
-      this.gitRootCache = await gitService.getRepoRoot();
+      this.gitRootCache = await gitService.getRepoRoot(cwd);
       return this.gitRootCache;
     } catch (error) {
-      if (error instanceof GitIntentError) {
+      if (error instanceof GitError || error instanceof GitIntentError) {
         throw error;
       }
       throw new GitIntentError(`Failed to get Git repository root: ${(error as Error).message}`, 'GIT_ROOT_ERROR');
     }
   }
 
-  private async getCommitsDir(): Promise<string> {
-    const root = await this.getGitRoot();
+  private async getCommitsDir(cwd?: string): Promise<string> {
+    const root = await this.getGitRoot(cwd);
     return path.join(root, this.config.gitDir, 'intentional-commits');
   }
 
-  private async getCommitsFile(): Promise<string> {
-    const commitsDir = await this.getCommitsDir();
+  private async getCommitsFile(cwd?: string): Promise<string> {
+    const commitsDir = await this.getCommitsDir(cwd);
     return path.join(commitsDir, 'commits.json');
   }
 
@@ -79,10 +79,10 @@ export class GitIntentionalCommitStorage implements IntentStorage {
     };
   }
 
-  private async ensureCommitsDir(): Promise<void> {
+  private async ensureCommitsDir(cwd?: string): Promise<void> {
     try {
-      const commitsDir = await this.getCommitsDir();
-      const commitsFile = await this.getCommitsFile();
+      const commitsDir = await this.getCommitsDir(cwd);
+      const commitsFile = await this.getCommitsFile(cwd);
 
       await fs.ensureDir(commitsDir);
       try {
@@ -95,17 +95,17 @@ export class GitIntentionalCommitStorage implements IntentStorage {
     }
   }
 
-  async loadCommits(): Promise<IntentionalCommit[]> {
+  async loadCommits(cwd?: string): Promise<IntentionalCommit[]> {
     try {
-      const root = await this.getGitRoot();
-      await this.ensureCommitsDir();
+      const root = await this.getGitRoot(cwd);
+      await this.ensureCommitsDir(cwd);
 
       try {
         const result = await gitRefs.showRef(`${this.config.refsPrefix}/commits:${this.config.storageFilename}`, root);
         const data = JSON.parse(result);
         return data.commits;
       } catch (error) {
-        const commitsFile = await this.getCommitsFile();
+        const commitsFile = await this.getCommitsFile(cwd);
         try {
           const data = await fs.readJSON(commitsFile);
           return data.commits;
@@ -298,9 +298,9 @@ export class GitIntentionalCommitStorage implements IntentStorage {
     }
   }
 
-  async initializeRefs(): Promise<void> {
+  async initializeRefs(cwd?: string): Promise<void> {
     try {
-      const root = await this.getGitRoot();
+      const root = await this.getGitRoot(cwd);
 
       const isRepo = await gitService.checkIsRepo(root);
       if (!isRepo) {

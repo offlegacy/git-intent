@@ -12,6 +12,10 @@ documentation:
 - changed-files:
   - any-glob-to-any-file: ['**/*.mdx']
 
+vscode-ext:
+- changed-files:
+  - any-glob-to-any-file: ['packages/git-intent-vscode/**/*']
+
 github-actions:
 - changed-files:
   - any-glob-to-any-file: ['.github/workflows/**/*']
@@ -19,3 +23,4 @@ github-actions:
 dependencies:
 - changed-files:
   - any-glob-to-any-file: ['package.json', 'pnpm-lock.yaml', '**/package.json']
+
