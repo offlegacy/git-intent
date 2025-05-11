@@ -17,8 +17,11 @@
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
+    "lint": "biome lint",
+    "lint:fix": "biome lint --write",
     "format": "biome format",
     "format:fix": "biome format --write",
+    "check": "biome check",
     "test": "turbo test",
     "clean": "turbo clean",
     "changeset": "changeset",
