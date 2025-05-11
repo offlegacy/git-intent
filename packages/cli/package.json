@@ -1,6 +1,6 @@
 {
   "name": "git-intent",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Git workflow tool for intentional commits — define your commit intentions first for clearer, more atomic changes.",
   "keywords": [
     "git",
@@ -28,7 +28,8 @@
     "start": "node dist/index.cjs",
     "format": "biome format",
     "format:fix": "biome format --write",
-    "pkg:build:macos": "pnpm build && pkg . --no-bytecode -t node18-macos-arm64 -o build/git-intent-macos"
+    "pkg:build:macos": "pnpm build && pkg . --no-bytecode -t node18-macos-arm64 -o build/git-intent-macos",
+    "type-check": "tsc --noEmit"
   },
   "pkg": {
     "assets": ["dist/**/*"],

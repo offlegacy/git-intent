@@ -1,7 +1,6 @@
 {
   "name": "@offlegacy/git-intent-core",
-  "version": "0.0.13",
-  "private": true,
+  "version": "0.0.14",
   "description": "Core functionality for git-intent",
   "type": "module",
   "main": "dist/index.cjs",
@@ -17,7 +16,8 @@
   "files": ["dist"],
   "scripts": {
     "dev": "tsup --watch",
-    "build": "tsup"
+    "build": "tsup",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "fs-extra": "^11.3.0",

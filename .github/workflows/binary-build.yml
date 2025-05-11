@@ -1,14 +1,17 @@
 name: Binary Build & Release
 
 on:
-  workflow_run:
-    workflows: ["Release"]
-    types: [completed]
-    branches: [main]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to build (e.g: 0.0.1)'
+        required: true
+        type: string
+  repository_dispatch:
+    types: [package-published]
 
 jobs:
   build:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
@@ -28,50 +31,40 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
-      - name: Check if CLI package was published
-        id: check_cli
+      - name: Build packages
+        run: pnpm build
+
+      - name: Get version
+        id: get_version
         run: |
-          # Get the latest tag
-          git fetch --tags
-          LATEST_TAG=$(git describe --tags --abbrev=0)
-          
-          # Check if CLI package version matches the tag
-          CLI_VERSION=$(node -p "require('./packages/cli/package.json').version")
-          TAG_VERSION=${LATEST_TAG#v}
-          
-          if [ "$CLI_VERSION" = "$TAG_VERSION" ]; then
-            echo "CLI package was published in this release, building binary"
-            echo "should_build=true" >> $GITHUB_OUTPUT
-            echo "version=$CLI_VERSION" >> $GITHUB_OUTPUT
+          if [ "${{ github.event_name }}" == "repository_dispatch" ]; then
+            VERSION="${{ github.event.client_payload.version }}"
           else
-            echo "CLI package was not published in this release, skipping binary build"
-            echo "should_build=false" >> $GITHUB_OUTPUT
+            VERSION="${{ github.event.inputs.version }}"
           fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "::notice::Building binary for version: $VERSION"
 
       - name: Build Binary (macOS)
-        if: steps.check_cli.outputs.should_build == 'true'
         run: pnpm --filter "git-intent" pkg:build:macos
 
       - name: Create Checksum
-        if: steps.check_cli.outputs.should_build == 'true'
         id: create_checksum
         run: |
           cd packages/cli/build
           ls -la
           cp git-intent-macos git-intent
-          VERSION="${{ steps.check_cli.outputs.version }}"
+          VERSION="${{ steps.get_version.outputs.version }}"
           tar -czf git-intent-$VERSION-darwin-amd64.tar.gz git-intent
           CHECKSUM=$(shasum -a 256 git-intent-$VERSION-darwin-amd64.tar.gz | awk '{print $1}')
           echo "checksum=$CHECKSUM" >> $GITHUB_OUTPUT
           echo "::notice::Binary checksum: $CHECKSUM"
 
       - name: Upload Binary to GitHub Release
-        if: steps.check_cli.outputs.should_build == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION="${{ steps.check_cli.outputs.version }}"
-          # add binary to existing release
+          VERSION="${{ steps.get_version.outputs.version }}"
           gh release upload v$VERSION packages/cli/build/git-intent-$VERSION-darwin-amd64.tar.gz
 
       - name: Trigger Homebrew Update

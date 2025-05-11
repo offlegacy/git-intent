@@ -6,6 +6,12 @@ core:
 - changed-files:
   - any-glob-to-any-file: ['packages/core/**/*']
 
+documentation:
+- changed-files:
+  - all-globs-to-any-file: ['**/*.md', '!.changeset/*.md']
+- changed-files:
+  - any-glob-to-any-file: ['**/*.mdx']
+
 vscode-ext:
 - changed-files:
   - any-glob-to-any-file: ['packages/git-intent-vscode/**/*']

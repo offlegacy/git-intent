@@ -17,14 +17,18 @@
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
+    "lint": "biome lint",
+    "lint:fix": "biome lint --write",
     "format": "biome format",
     "format:fix": "biome format --write",
+    "check": "biome check",
     "test": "turbo test",
     "clean": "turbo clean",
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "turbo build && changeset publish",
-    "cli": "pnpm --filter='git-intent' start"
+    "cli": "pnpm --filter='git-intent' start",
+    "type-check": "turbo type-check"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
