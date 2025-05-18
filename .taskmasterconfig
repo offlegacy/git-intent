@@ -1,8 +1,8 @@
 {
   "models": {
     "main": {
-      "provider": "openai",
-      "modelId": "gpt-4o-mini",
+      "provider": "openrouter",
+      "modelId": "openai/gpt-4o-mini",
       "maxTokens": 120000,
       "temperature": 0.2
     },
