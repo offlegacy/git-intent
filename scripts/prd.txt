@@ -1,0 +1,240 @@
+# git-intent VSCode Extension PRD
+
+## Overview
+The git-intent VSCode extension is a tool that allows developers to use the git-intent workflow directly within the VSCode editor. This extension integrates git-intent's core philosophy of defining intentions before writing code with VSCode's powerful development environment. Developers can fully utilize the intentional commit workflow without switching to the terminal, improving productivity and maintaining a clearer commit history.
+
+## Core Features
+
+### 1. git-intent Command Integration
+- **Functionality**: Access all git-intent commands through the VSCode command palette
+- **Importance**: Allows developers to use the entire git-intent workflow without leaving the IDE
+- **Operation**: The extension internally calls the git-intent CLI and displays results in the VSCode UI
+
+### 2. Intent Management Panel
+- **Functionality**: Dedicated sidebar panel to view and manage all currently stored intentions
+- **Importance**: Visually inspect and easily manage the list of intentions
+- **Operation**: The panel reads and displays data from the .git/intentional-commits directory and provides action buttons for each intention
+
+### 3. Status Indicator
+- **Functionality**: Display the current working intention and its status in the VSCode status bar
+- **Importance**: Reminds developers of their current working intention to maintain focus
+- **Operation**: Shows the currently active intention ID and description in the status bar
+
+### 4. Intent-Based Working Branches
+- **Functionality**: Create and manage working branches per intention
+- **Importance**: Improves focus by separating each intention into an independent workspace
+- **Operation**: Provides an option to automatically create a new working branch when starting an intention
+
+### 5. Intent-Based Commit UI
+- **Functionality**: Enhanced UI for converting intentions to commits
+- **Importance**: Simplifies the commit process and allows verification of alignment with the intention
+- **Operation**: Pre-fills commit messages based on the current intention description and provides an interface to review whether changes align with the intention
+
+### 6. Intent Templates
+- **Functionality**: Support for templates for frequently used intention types
+- **Importance**: Maintains consistent intention format and reduces intention creation time
+- **Operation**: Provides a customizable list of templates and a quick selection menu
+
+## User Experience
+
+### User Personas
+1. **Professional Developer**: Developer familiar with git workflow seeking a more systematic approach to commits
+2. **Team Leader**: Leader looking to improve team code quality and commit clarity
+3. **Junior Developer**: Beginner developer looking to form good git habits
+
+### Key User Flows
+1. **Adding an Intention**:
+   - Select "Git Intent: Add Intent" from the command palette
+   - Enter intention description (template options provided)
+   - Intention is added to the sidebar panel
+
+2. **Starting an Intention**:
+   - Select an intention in the sidebar panel and click the "Start" button
+   - Current working intention is displayed in the status bar
+   - Optionally create a new working branch
+
+3. **Committing an Intention**:
+   - After code changes, click "Commit Intent" in the source control panel
+   - Intention-based commit message is pre-filled
+   - Review changes and confirm commit
+
+### UI/UX Considerations
+- Maintain consistency with VSCode's existing Git interface
+- Minimize workflow disruption with minimal UI
+- Use intuitive icons and clear labels
+- Support for dark/light themes
+- Provide keyboard shortcuts for quick access
+
+## Technical Architecture
+
+### System Components
+1. **Extension Core Module**:
+   - Interacts with VSCode API
+   - Manages command registration and UI components
+
+2. **git-intent Interface Module**:
+   - Communicates with git-intent CLI
+   - Executes commands and parses results
+
+3. **UI Components**:
+   - Sidebar panel
+   - Status bar item
+   - WebView-based interfaces
+
+4. **Data Management Module**:
+   - Reads/writes intention data
+   - Manages extension settings
+
+### Data Models
+1. **Intent Model**:
+   ```typescript
+   interface Intent {
+     id: string;
+     description: string;
+     status: 'pending' | 'active' | 'completed' | 'cancelled';
+     createdAt: Date;
+     startedAt?: Date;
+     completedAt?: Date;
+   }
+   ```
+
+2. **Extension Settings Model**:
+   ```typescript
+   interface ExtensionSettings {
+     createBranchOnStart: boolean;
+     branchNameTemplate: string;
+     intentTemplates: string[];
+     showStatusBar: boolean;
+   }
+   ```
+
+### APIs and Integrations
+1. **git-intent CLI Integration**:
+   - Execute CLI commands through child processes
+   - Parse output and handle errors
+
+2. **VSCode Git API Integration**:
+   - Interact with existing Git extension
+   - Extend source control view
+
+3. **File System Access**:
+   - Read/write to .git/intentional-commits directory
+   - Detect workspace file changes
+
+### Infrastructure Requirements
+- Node.js (>= 18)
+- Git (>= 2.0)
+- git-intent CLI installation required
+- VSCode (>= 1.60.0)
+
+## Development Roadmap
+
+### MVP Requirements
+1. **Basic Command Integration**:
+   - git intent add
+   - git intent list
+   - git intent show
+   - git intent start
+   - git intent commit
+   - git intent cancel
+
+2. **Simple Intention List Panel**:
+   - Display currently stored intentions
+   - Basic action buttons (start, cancel, commit)
+
+3. **Status Bar Integration**:
+   - Display current working intention
+
+### Future Enhancements
+1. **Advanced Intention Management**:
+   - Intention editing functionality
+   - Intention filtering and sorting
+   - Intention tag support
+
+2. **Enhanced UI/UX**:
+   - Drag and drop intention reordering
+   - Intention details expansion panel
+   - Intention progress visualization
+
+3. **Team Collaboration Features**:
+   - Intention sharing mechanisms
+   - Team intention templates
+   - Code review integration
+
+4. **Analytics and Insights**:
+   - Intention completion statistics
+   - Commit quality metrics
+   - Developer productivity insights
+
+5. **AI-Assisted Features**:
+   - Intention description suggestions
+   - Commit message improvement suggestions
+   - Related file change suggestions
+
+## Logical Dependency Chain
+
+### Foundation Features (Phase 1)
+1. Set up basic VSCode extension structure
+2. Implement git-intent CLI integration module
+3. Implement basic command execution functionality
+
+### Usable UI (Phase 2)
+1. Register command palette commands
+2. Implement simple intention list panel
+3. Integrate status bar
+
+### Core Workflow (Phase 3)
+1. Improve intention addition UI
+2. Implement intention start and cancel functionality
+3. Implement intention-based commit UI
+
+### Advanced Features (Phase 4)
+1. Implement intention template system
+2. Implement intention-based working branch functionality
+3. Implement settings page
+
+## Risks and Mitigations
+
+### Technical Challenges
+1. **VSCode API Limitations**:
+   - **Risk**: VSCode API may not support all needed functionality
+   - **Mitigation**: Work within existing API as much as possible, develop alternative approaches when necessary
+
+2. **git-intent CLI Dependency**:
+   - **Risk**: CLI version changes may affect extension functionality
+   - **Mitigation**: Implement version detection and compatibility layer, notify users of updates
+
+3. **Performance Issues**:
+   - **Risk**: Potential performance degradation in large repositories
+   - **Mitigation**: Optimize asynchronous operations, implement caching mechanisms, provide progress indicators
+
+### MVP Decisions
+1. **Feature Scope**:
+   - **Risk**: Including too many features may delay development
+   - **Mitigation**: Focus on core workflow and define clear MVP
+
+2. **User Adoption**:
+   - **Risk**: Users may not adapt to the new workflow
+   - **Mitigation**: Provide intuitive UI, detailed documentation, and interactive tutorials
+
+### Resource Constraints
+1. **Development Resources**:
+   - **Risk**: Development delays due to limited resources
+   - **Mitigation**: Set clear priorities, adopt modular development approach
+
+2. **Maintenance Burden**:
+   - **Risk**: Long-term maintenance requirements
+   - **Mitigation**: Automate testing, establish clear code structure, create contribution guidelines
+
+## Appendix
+
+### Research Findings
+- VSCode extension development best practices
+- Analysis of existing Git extensions
+- User workflow studies
+
+### Technical Specifications
+- TypeScript-based development
+- Utilizing VSCode extension API
+- WebView-based UI components
+- Settings and state management patterns
