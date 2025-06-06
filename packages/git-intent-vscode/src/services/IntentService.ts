@@ -112,21 +112,20 @@ export class IntentService {
    */
   public async commitIntent(id: string, additionalMessage?: string): Promise<IntentionalCommit | undefined> {
     try {
+      const intents = await this.getIntents();
       // If there's an additional message, update the intent message
-      if (additionalMessage) {
-        const intents = await this.getIntents();
-        const intent = intents.find((intent) => intent.id === id);
-        if (intent) {
-          const updatedMessage = additionalMessage ? `${intent.message} - ${additionalMessage}` : intent.message;
-          await storage.updateCommitMessage(id, updatedMessage);
-        }
+      const intent = intents.find((intent) => intent.id === id);
+
+      if (!intent) {
+        throw new Error('Intent not found');
       }
 
-      await storage.updateCommitStatus(id, 'completed');
-      await this.gitService.createCommit(id);
+      const updatedMessage = additionalMessage ? `${intent.message}\n\n${additionalMessage}` : intent.message;
 
-      // Get the updated intent
-      const intents = await this.getIntents();
+      await this.gitService.createCommit(updatedMessage, this.workspacePath);
+      await storage.updateCommitMessage(id, updatedMessage);
+      await storage.updateCommitStatus(id, 'completed');
+
       return intents.find((intent) => intent.id === id);
     } catch (error) {
       console.error('Failed to commit intent:', error);

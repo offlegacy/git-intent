@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import type { IntentService } from '../services/IntentService';
+import { CommitPanel } from '../views/CommitPanel';
 import type { IntentTreeProvider } from '../views/IntentTreeProvider';
 import type { StatusBarManager } from '../views/StatusBarManager';
 
@@ -12,6 +13,35 @@ export function registerCommands(
   treeProvider: IntentTreeProvider,
   statusBarManager: StatusBarManager
 ): void {
+  // Register open commit panel command
+  context.subscriptions.push(
+    vscode.commands.registerCommand('git-intent-vscode.openCommitPanel', async () => {
+      try {
+        const currentIntent = await intentService.getCurrentIntent();
+        if (!currentIntent) {
+          vscode.window.showInformationMessage('No active intent to commit');
+          return;
+        }
+        CommitPanel.show(context.extensionUri, currentIntent.message, async (commitMsg: string) => {
+          try {
+            await intentService.commitIntent(currentIntent.id, commitMsg);
+            treeProvider.refresh();
+            statusBarManager.updateStatusBar();
+            vscode.window.showInformationMessage('Intent committed successfully');
+          } catch (error) {
+            vscode.window.showErrorMessage(
+              `Failed to commit intent: ${error instanceof Error ? error.message : String(error)}`
+            );
+          }
+        });
+      } catch (error) {
+        vscode.window.showErrorMessage(
+          `Failed to open commit panel: ${error instanceof Error ? error.message : String(error)}`
+        );
+      }
+    })
+  );
+
   // Register add intent command
   context.subscriptions.push(
     vscode.commands.registerCommand('git-intent-vscode.addIntent', async () => {
