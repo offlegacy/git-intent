@@ -6,7 +6,12 @@ export class CommitPanel {
   private readonly _extensionUri: vscode.Uri;
   private _disposables: vscode.Disposable[] = [];
 
-  private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, intentionDescription: string, onCommit?: (commitMsg: string) => void) {
+  private constructor(
+    panel: vscode.WebviewPanel,
+    extensionUri: vscode.Uri,
+    intentionDescription: string,
+    onCommit?: (commitMsg: string) => void
+  ) {
     this._panel = panel;
     this._extensionUri = extensionUri;
     this._panel.webview.html = this._getHtmlForWebview(intentionDescription);
