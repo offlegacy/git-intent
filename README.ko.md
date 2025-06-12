@@ -2,7 +2,7 @@
 
 ![npm version](https://img.shields.io/npm/v/git-intent.svg)
 
-[English](./README.md) | 한국어
+[English](https://github.com/offlegacy/git-intent/blob/main/README.md) | 한국어
 
 **git-intent**는 [의도적 커밋(intentional commits)](https://intentionalcommits.org/)을 생성하기 위한 Git 워크플로우 도구입니다.
 
@@ -131,4 +131,4 @@ A: 의도는 저장소의 `.git` 디렉토리에 로컬로 저장되며 공유�
 
 ## 라이선스
 
-MIT [OffLegacy](https://github.com/offlegacy) — [LICENSE](./LICENSE)
+MIT [OffLegacy](https://www.offlegacy.org/) — [LICENSE](https://github.com/offlegacy/git-intent/blob/main/LICENSE)
