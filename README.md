@@ -2,7 +2,7 @@
 
 ![npm version](https://img.shields.io/npm/v/git-intent.svg)
 
-English | [한국어](./README.ko.md)
+English | [한국어](https://github.com/offlegacy/git-intent/blob/main/README.ko.md)
 
 **git-intent** is a Git workflow tool designed for creating [intentional commits](https://intentionalcommits.org/).
 
@@ -126,8 +126,10 @@ A: Intentions are stored locally in your repository's `.git` directory and are n
 
 We warmly welcome contributions from the community. See our detailed guide:
 
-[CONTRIBUTING.md](./CONTRIBUTING.md)
+[CONTRIBUTING.md](https://github.com/offlegacy/git-intent/blob/main/CONTRIBUTING.md)
 
 ## License
 
-MIT [OffLegacy](https://github.com/offlegacy) — [LICENSE](./LICENSE)
+See [LICENSE](https://github.com/offlegacy/git-intent/blob/main/LICENSE) for more information.
+
+MIT © [OffLegacy](https://www.offlegacy.org/)
