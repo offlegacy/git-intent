@@ -130,6 +130,4 @@ We warmly welcome contributions from the community. See our detailed guide:
 
 ## License
 
-See [LICENSE](https://github.com/offlegacy/git-intent/blob/main/LICENSE) for more information.
-
-MIT © [OffLegacy](https://www.offlegacy.org/)
+MIT [OffLegacy](https://www.offlegacy.org/) — [LICENSE](https://github.com/offlegacy/git-intent/blob/main/LICENSE)
