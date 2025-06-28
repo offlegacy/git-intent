@@ -1,0 +1,30 @@
+{
+  "name": "git-intent",
+  "version": "0.0.1",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "main": "dist/cli.js",
+  "bin": {
+    "intent-cli": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "bun build ./src/cli.ts --outdir ./dist --target=bun",
+    "start": "bun run src/cli.ts",
+    "dev": "bun --watch src/cli.ts",
+    "format": "biome format",
+    "format:fix": "biome format --write"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.0.6",
+    "@types/bun": "^1.2.17",
+    "drizzle-kit": "^0.31.4"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "commander": "^14.0.0",
+    "drizzle-orm": "^0.44.2"
+  }
+}
