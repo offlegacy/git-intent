@@ -11,13 +11,14 @@
   "scripts": {
     "build": "tsup",
     "start": "node dist/cli.js",
-    "dev": "tsx watch src/cli.ts",
+    "dev": "tsx src/cli.ts",
     "format": "biome format",
     "format:fix": "biome format --write",
     "db:check": "drizzle-kit check",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
-    "db:migrate": "drizzle-kit migrate"
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "better-sqlite3": "^12.2.0",
@@ -30,7 +31,6 @@
     "@types/node": "^24.0.7",
     "dotenv": "^17.0.0",
     "drizzle-kit": "^0.31.4",
-    "tsup": "^8.5.0",
     "tsx": "^4.20.3",
     "typescript": "^5"
   },

@@ -1,7 +1,8 @@
 import { Command } from "commander";
 import { desc, eq } from "drizzle-orm";
-import { db } from "./db";
-import { type Intent, intents } from "./db/schema";
+import { add } from "./core/commands";
+import { db } from "./core/db";
+import { type Intent, intents } from "./core/db/schema";
 
 const program = new Command();
 
@@ -22,14 +23,8 @@ program
   .option("-s, --status <status>", "Initial status", "created")
   .action((message: string, options: { status: string }) => {
     try {
-      const result = db
-        .insert(intents)
-        .values({ message, status: options.status })
-        .run();
-
-      console.log(
-        `Added intent #${result.lastInsertRowid}: ${message} [${options.status}]`,
-      );
+      const rowid = add(message, options.status);
+      console.log(`Added intent #${rowid}: ${message} [${options.status}]`);
     } catch (error) {
       console.error("Failed to add intent:", getErrorMessage(error));
       process.exit(1);
