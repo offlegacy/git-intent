@@ -1,5 +1,7 @@
 import { Command } from "commander";
-import { db } from "./database";
+import { desc, eq } from "drizzle-orm";
+import { db } from "./db";
+import { type Intent, intents } from "./db/schema";
 
 const program = new Command();
 
@@ -20,10 +22,10 @@ program
   .option("-s, --status <status>", "Initial status", "created")
   .action((message: string, options: { status: string }) => {
     try {
-      const result = db.run(
-        "INSERT INTO intents (message, status) VALUES (?, ?)",
-        [message, options.status],
-      );
+      const result = db
+        .insert(intents)
+        .values({ message, status: options.status })
+        .run();
 
       console.log(
         `Added intent #${result.lastInsertRowid}: ${message} [${options.status}]`,
@@ -41,29 +43,30 @@ program
   .option("-s, --status <status>", "Filter by status")
   .action((options: { status?: string }) => {
     try {
-      let query: string;
-      let params: any[] = [];
+      let intentList: Intent[];
 
       if (options.status) {
-        query = "SELECT * FROM intents WHERE status = ? ORDER BY id DESC";
-        params = [options.status];
+        intentList = db
+          .select()
+          .from(intents)
+          .where(eq(intents.status, options.status))
+          .orderBy(desc(intents.id))
+          .all();
       } else {
-        query = "SELECT * FROM intents ORDER BY id DESC";
+        intentList = db.select().from(intents).orderBy(desc(intents.id)).all();
       }
 
-      const intents = db.query(query).all(...params);
-
-      if (intents.length === 0) {
+      if (intentList.length === 0) {
         console.log("No intents found.");
         return;
       }
 
-      console.log(`\nFound ${intents.length} intent(s):\n`);
+      console.log(`\nFound ${intentList.length} intent(s):\n`);
 
-      intents.forEach((intent: any) => {
+      intentList.forEach((intent) => {
         console.log(`#${intent.id} ${intent.message}`);
         console.log(
-          `   Status: ${intent.status} | Created: ${intent.timestamp}`,
+          `   Status: ${intent.status} | Created: ${new Date(intent.createdAt).toLocaleString()}`,
         );
         console.log("");
       });
