@@ -1,11 +1,8 @@
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
-import { sql } from "drizzle-orm";
-
-import { IntentStatus } from "./types";
-
-export const intentsTable = sqliteTable("intents", {
-  id: integer({ mode: "number" }).primaryKey({ autoIncrement: true }),
-  message: text("message").notNull(),
-  status: text({ enum: IntentStatus }),
-  timestamp: text().default(sql`(CURRENT_TIMESTAMP)`),
-});
+export const SCHEMA = `
+CREATE TABLE IF NOT EXISTS intents (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  message TEXT NOT NULL,
+  status TEXT,
+  timestamp TEXT DEFAULT (CURRENT_TIMESTAMP)
+);
+`;
