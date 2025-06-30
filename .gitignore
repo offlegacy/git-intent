@@ -37,3 +37,7 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 *.db
 *.sqlite
 *.sqlite3
+
+# nix flake
+flake.nix
+flake.lock
