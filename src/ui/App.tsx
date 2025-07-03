@@ -6,7 +6,7 @@ import { PlannedIntentsBox } from "./PlannedIntentsBox";
 import { Help } from "./Help";
 import { InputBox } from "./InputBox";
 import { useState } from "react";
-import { IntentProvider } from "./IntentContext";
+import { CommandProvider } from "./CommandContext";
 
 export const App = () => {
   const [showInputBox, setShowInputBox] = useState(false);
@@ -22,7 +22,7 @@ export const App = () => {
   });
 
   return (
-    <IntentProvider>
+    <CommandProvider>
       <MainLayout>
         <ActiveIntentBox />
         <PlannedIntentsBox />
@@ -30,6 +30,6 @@ export const App = () => {
         {showInputBox ? <InputBox setShowInputBox={setShowInputBox} /> : null}
         <Help />
       </MainLayout>
-    </IntentProvider>
+    </CommandProvider>
   );
 };

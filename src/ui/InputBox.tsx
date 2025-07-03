@@ -1,7 +1,7 @@
 import { useState } from "react";
 import TextInput from "ink-text-input";
 import { Box } from "ink";
-import { useIntents } from "./IntentContext";
+import { useCommands } from "./CommandContext";
 
 export const InputBox = ({
   setShowInputBox,
@@ -9,7 +9,7 @@ export const InputBox = ({
   setShowInputBox: (show: boolean) => void;
 }) => {
   const [query, setQuery] = useState("");
-  const { dispatch } = useIntents();
+  const { add } = useCommands();
 
   return (
     <Box borderStyle="round">
@@ -17,7 +17,7 @@ export const InputBox = ({
         value={query}
         onChange={setQuery}
         onSubmit={() => {
-          dispatch({ type: "ADD_INTENT", payload: { message: query } });
+          add(query);
           setShowInputBox(false);
         }}
         placeholder="What are you trying to achieve?"
