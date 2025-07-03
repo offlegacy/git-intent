@@ -1,8 +1,9 @@
-import { Box, Text } from "ink";
+import { Box, Text, useFocus } from "ink";
 
 import * as commands from "../core/commands";
 
 export const ActiveIntentBox = () => {
+  const { isFocused } = useFocus();
   const activeList = commands.list("in_progress");
 
   if (!Array.isArray(activeList) || activeList.length === 0) {
@@ -37,6 +38,7 @@ export const ActiveIntentBox = () => {
       paddingLeft={1}
       marginRight={1}
       borderStyle="round"
+      borderColor={isFocused ? "green" : "white"}
       flexDirection="column"
     >
       <Box marginTop={-1}>
