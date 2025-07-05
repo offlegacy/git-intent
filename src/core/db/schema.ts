@@ -2,14 +2,14 @@ import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { INTENT_STATUS } from "../../types";
 
 export const projects = sqliteTable("projects", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+  id: text("id").primaryKey(),
   repoPath: text("repo_path").notNull().unique(),
   repoName: text("repo_name").notNull(),
 });
 
 export const branches = sqliteTable("branches", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  projectId: integer("project_id")
+  id: text("id").primaryKey(),
+  projectId: text("project_id")
     .notNull()
     .references(() => projects.id),
   name: text("name").notNull(),
@@ -19,7 +19,7 @@ export const intents = sqliteTable("intents", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   message: text("message").notNull(),
   status: text("status", { enum: INTENT_STATUS }).notNull(),
-  branchId: integer("branch_id").references(() => branches.id),
+  branchId: text("branch_id").references(() => branches.id),
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
     .default(new Date()),
