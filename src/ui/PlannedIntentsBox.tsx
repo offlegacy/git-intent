@@ -26,7 +26,7 @@ export const PlannedIntentsBox = () => {
         <Text> Intent </Text>
       </Box>
       {intentsList.map((intent) => (
-        <Box>
+        <Box key={intent.id}>
           <Text>{`${intent.message}`}</Text>
         </Box>
       ))}

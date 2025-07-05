@@ -1,5 +1,5 @@
-import React, { type ReactElement, useRef, useEffect } from "react";
-import { measureElement, Box, Text } from "ink";
+import { Box, measureElement, Text } from "ink";
+import React, { type ReactElement, useEffect, useRef } from "react";
 
 type TitleAlignment = "left" | "center" | "right";
 
@@ -25,7 +25,7 @@ export const TitledBox = (props: TitledBoxProps) => {
   const cArray = React.Children.toArray(children);
   let textWrapper: JSX.Element;
   if (cArray.length > 0) {
-    let cText = cArray.find((child) => {
+    const cText = cArray.find((child) => {
       return React.isValidElement(child) && child.type === TitleText;
     });
     if (cText) {
