@@ -1,9 +1,10 @@
 import { desc, eq } from "drizzle-orm";
+import type { IntentStatus } from "../constants";
 import { db } from "../db";
 import type { Intent } from "../db/schema";
 import { intents } from "../db/schema";
 
-export function list(status?: string): Intent[] {
+export function list(status?: IntentStatus): Intent[] {
   if (status) {
     return db
       .select()

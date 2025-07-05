@@ -1,5 +1,5 @@
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { INTENT_STATUS } from "../../types";
+import { INTENT_STATUS } from "../constants";
 
 export const projects = sqliteTable("projects", {
   id: text("id").primaryKey(),
