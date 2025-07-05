@@ -46,7 +46,9 @@ export function getBranchMetadata(projectId: string): Branch {
       throw new GitError("Cannot determine branch name in detached HEAD state");
     }
 
-    const branchRefHashId = execGit(`rev-parse --verify ${branchName}`);
+    const branchRefHashId = execGit(
+      `rev-parse --symbolic-full-name ${branchName}`,
+    );
 
     return {
       id: branchRefHashId,
