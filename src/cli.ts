@@ -1,6 +1,7 @@
 import { Command } from "commander";
 
 import * as commands from "./core/commands";
+import type { IntentStatus } from "./core/constants";
 
 const program = new Command();
 
@@ -19,7 +20,7 @@ program
   .description("Add a new intent")
   .argument("<message>", "Intent message")
   .option("-s, --status <status>", "Initial status", "created")
-  .action((message: string, options: { status: string }) => {
+  .action((message: string, options: { status: IntentStatus }) => {
     try {
       const rowid = commands.add(message, options.status);
       console.log(`Added intent #${rowid}: ${message} [${options.status}]`);
@@ -34,7 +35,7 @@ program
   .alias("ls")
   .description("List all intents")
   .option("-s, --status <status>", "Filter by status")
-  .action((options: { status?: string }) => {
+  .action((options: { status?: IntentStatus }) => {
     try {
       const intentList = commands.list(options.status);
 
