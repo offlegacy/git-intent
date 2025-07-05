@@ -2,6 +2,7 @@ import { Command } from "commander";
 
 import * as commands from "./core/commands";
 import { ensureBranch } from "./core/utils/branch";
+import { getErrorMessage } from "./core/utils/error";
 import { ensureProject } from "./core/utils/project";
 
 const program = new Command();
@@ -10,11 +11,6 @@ program
   .name("git-intent")
   .description("Git workflow tool designed for creating intentional commits.")
   .version("0.0.1");
-
-const getErrorMessage = (error: unknown): string => {
-  if (error instanceof Error) return error.message;
-  return String(error);
-};
 
 program
   .command("start")

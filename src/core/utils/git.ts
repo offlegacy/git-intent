@@ -1,16 +1,13 @@
 import { execSync } from "node:child_process";
 import path from "node:path";
 import type { Branch, Project } from "../db/schema";
+import { getErrorMessage } from "./error";
 
 export class GitError extends Error {
   constructor(message: string) {
     super(message);
     this.name = "GitError";
   }
-}
-
-function getErrorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
 }
 
 export function execGit(command: string): string {
