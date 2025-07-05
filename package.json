@@ -15,6 +15,8 @@
     "tui": "tsx src/main.tsx",
     "format": "biome format",
     "format:fix": "biome format --write",
+    "check": "biome check",
+    "check:fix": "biome check --write",
     "db:check": "drizzle-kit check",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
