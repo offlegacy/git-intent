@@ -59,13 +59,17 @@ export function getBranchMetadata(projectId: string): Branch {
   }
 }
 
-export function commit(message: string) {
-  if (!message) {
+if (!message) {
     throw new Error("Commit message is required");
   }
 
   try {
-    execGit(`commit -m "${message}"`);
+    // Use an environment variable to pass the commit message safely,
+    // preventing command injection.
+    const commitHash = execSync('git commit -m "$COMMIT_MESSAGE"', {
+      encoding: "utf-8",
+      env: { ...process.env, COMMIT_MESSAGE: message },
+    });
     const commitHash = execGit("rev-parse HEAD");
 
     return {
@@ -74,4 +78,3 @@ export function commit(message: string) {
   } catch (error) {
     throw new GitError(`Failed to commit changes: ${getErrorMessage(error)}`);
   }
-}
