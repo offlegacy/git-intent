@@ -1,4 +1,5 @@
 import { execSync } from "node:child_process";
+import path from "node:path";
 import type { Branch, Project } from "../db/schema";
 
 export class GitError extends Error {
@@ -66,8 +67,7 @@ export function commit(message: string) {
   }
 
   try {
-    const safeMessage = message.replace(/"/g, '\\"');
-    execGit(`commit -m "${safeMessage}"`);
+    execGit(`commit -m "${message}"`);
     const commitHash = execGit("rev-parse HEAD");
 
     return {
