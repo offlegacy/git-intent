@@ -38,10 +38,9 @@ export function getProjectMetadata(): Project {
   }
 }
 
-export function getBranchMetadata(): Branch {
+export function getBranchMetadata(projectId: string): Branch {
   try {
     const branchName = execGit("rev-parse --abbrev-ref HEAD");
-    const projectId = execGit("rev-parse --show-toplevel");
 
     if (branchName === "HEAD") {
       throw new GitError("Cannot determine branch name in detached HEAD state");

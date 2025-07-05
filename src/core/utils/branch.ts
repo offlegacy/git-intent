@@ -3,7 +3,7 @@ import { ensureEntity } from "./db-helpers";
 import { getBranchMetadata } from "./git";
 
 export function ensureBranch(projectId: string) {
-  const branchMeta = getBranchMetadata();
+  const branchMeta = getBranchMetadata(projectId);
 
   return ensureEntity({
     table: branches,
