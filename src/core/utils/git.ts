@@ -23,7 +23,7 @@ export function execGit(command: string): string {
 export function getProjectMetadata(): Project {
   try {
     const repoPath = execGit("rev-parse --show-toplevel");
-    const repoName = repoPath.split("/").pop() || "";
+    const repoName = path.basename(repoPath);
 
     return {
       id: repoPath, // TODO: make it unique
