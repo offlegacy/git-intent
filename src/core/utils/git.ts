@@ -66,7 +66,7 @@ export function commit(message: string) {
   }
 
   try {
-    const safeMessage = message.replace(/"/g, '\"');
+    const safeMessage = message.replace(/"/g, '\\"');
     execGit(`commit -m "${safeMessage}"`);
     const commitHash = execGit("rev-parse HEAD");
 
