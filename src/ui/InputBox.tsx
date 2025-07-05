@@ -1,6 +1,6 @@
-import { useState } from "react";
-import TextInput from "ink-text-input";
 import { Box } from "ink";
+import TextInput from "ink-text-input";
+import { useState } from "react";
 import { useCommands } from "./CommandContext";
 
 export const InputBox = ({

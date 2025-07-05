@@ -1,12 +1,11 @@
-import { useApp, useInput, Spacer } from "ink";
-
-import { MainLayout } from "./MainLayout";
+import { Spacer, useApp, useInput } from "ink";
+import { useState } from "react";
 import { ActiveIntentBox } from "./ActiveIntentBox";
-import { PlannedIntentsBox } from "./PlannedIntentsBox";
+import { CommandProvider } from "./CommandContext";
 import { Help } from "./Help";
 import { InputBox } from "./InputBox";
-import { useState } from "react";
-import { CommandProvider } from "./CommandContext";
+import { MainLayout } from "./MainLayout";
+import { PlannedIntentsBox } from "./PlannedIntentsBox";
 
 export const App = () => {
   const [showInputBox, setShowInputBox] = useState(false);

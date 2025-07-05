@@ -1,8 +1,8 @@
 import { desc, eq } from "drizzle-orm";
+import type { IntentStatus } from "../../types";
 import { db } from "../db";
 import type { Intent } from "../db/schema";
 import { intents } from "../db/schema";
-import { IntentStatus } from "../../types";
 
 export function list(status?: (typeof IntentStatus)[number]): Intent[] {
   if (status) {
