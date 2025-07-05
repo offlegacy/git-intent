@@ -1,28 +1,16 @@
-import { eq } from "drizzle-orm";
-import { db } from "../db";
 import { branches } from "../db/schema";
+import { ensureEntity } from "./db-helpers";
 import { getBranchMetadata } from "./git";
 
 export function ensureBranch(projectId: string) {
   const branchMeta = getBranchMetadata();
 
-  const existingBranch = db
-    .select()
-    .from(branches)
-    .where(eq(branches.id, branchMeta.id))
-    .get();
-
-  if (existingBranch) {
-    return existingBranch.id;
-  }
-
-  db.insert(branches)
-    .values({
+  return ensureEntity({
+    table: branches,
+    data: {
       id: branchMeta.id,
-      projectId: projectId,
+      projectId,
       name: branchMeta.name,
-    })
-    .run();
-
-  return branchMeta.id;
+    },
+  });
 }
