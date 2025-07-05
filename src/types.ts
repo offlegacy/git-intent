@@ -4,7 +4,7 @@ declare global {
   var __db: ReturnType<typeof drizzle> | undefined;
 }
 
-export const IntentStatus = [
+export const INTENT_STATUS = [
   "created",
   "in_progress",
   "completed",
