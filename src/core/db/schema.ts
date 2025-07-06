@@ -2,16 +2,19 @@ import { sql } from "drizzle-orm";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { INTENT_STATUS } from "../constants";
 
+const nowMs = sql`(strftime('%s','now') * 1000)`;
+
 export const projects = sqliteTable("projects", {
   id: text("id").primaryKey(),
   repoPath: text("repo_path").notNull().unique(),
   repoName: text("repo_name").notNull(),
   createdAt: integer("created_at", { mode: "timestamp_ms" })
     .notNull()
-    .default(sql`(strftime('%s','now') * 1000)`),
+    .default(nowMs),
   updatedAt: integer("updated_at", { mode: "timestamp_ms" })
     .notNull()
-    .default(sql`(strftime('%s','now') * 1000)`),
+    .default(nowMs)
+    .$onUpdate(() => nowMs),
 });
 
 export const branches = sqliteTable("branches", {
@@ -22,10 +25,11 @@ export const branches = sqliteTable("branches", {
   name: text("name").notNull(),
   createdAt: integer("created_at", { mode: "timestamp_ms" })
     .notNull()
-    .default(sql`(strftime('%s','now') * 1000)`),
+    .default(nowMs),
   updatedAt: integer("updated_at", { mode: "timestamp_ms" })
     .notNull()
-    .default(sql`(strftime('%s','now') * 1000)`),
+    .default(nowMs)
+    .$onUpdate(() => nowMs),
 });
 
 export const intents = sqliteTable("intents", {
@@ -35,10 +39,11 @@ export const intents = sqliteTable("intents", {
   branchId: text("branch_id").references(() => branches.id),
   createdAt: integer("created_at", { mode: "timestamp_ms" })
     .notNull()
-    .default(sql`(strftime('%s','now') * 1000)`),
+    .default(nowMs),
   updatedAt: integer("updated_at", { mode: "timestamp_ms" })
     .notNull()
-    .default(sql`(strftime('%s','now') * 1000)`),
+    .default(nowMs)
+    .$onUpdate(() => nowMs),
 });
 
 export type Project = typeof projects.$inferSelect;
