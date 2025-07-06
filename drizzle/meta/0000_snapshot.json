@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "215ab2fd-0533-4007-a111-bffd92bf720e",
+  "id": "c73ccc81-b8a4-4b6a-a90c-b3f1e5d5e406",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "branches": {
@@ -86,7 +86,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "'\"2025-07-05T16:50:48.469Z\"'"
+          "default": "'\"2025-07-06T15:08:02.349Z\"'"
         },
         "updated_at": {
           "name": "updated_at",
@@ -94,7 +94,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "'\"2025-07-05T16:50:48.469Z\"'"
+          "default": "'\"2025-07-06T15:08:02.349Z\"'"
         }
       },
       "indexes": {},

@@ -12,7 +12,7 @@ export function start({
     .insert(intents)
     .values({
       message,
-      status: "in_progress",
+      status: "active",
       branchId,
     })
     .run();

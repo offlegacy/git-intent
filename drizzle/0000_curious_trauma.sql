@@ -10,8 +10,8 @@ CREATE TABLE `intents` (
 	`message` text NOT NULL,
 	`status` text NOT NULL,
 	`branch_id` text,
-	`created_at` integer DEFAULT '"2025-07-05T16:50:48.469Z"' NOT NULL,
-	`updated_at` integer DEFAULT '"2025-07-05T16:50:48.469Z"' NOT NULL,
+	`created_at` integer DEFAULT '"2025-07-06T15:08:02.349Z"' NOT NULL,
+	`updated_at` integer DEFAULT '"2025-07-06T15:08:02.349Z"' NOT NULL,
 	FOREIGN KEY (`branch_id`) REFERENCES `branches`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
