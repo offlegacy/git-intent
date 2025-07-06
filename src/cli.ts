@@ -29,6 +29,19 @@ program
     }
   });
 
+program
+  .command("list")
+  .description("List all intents")
+  .action(() => {
+    try {
+      const intents = commands.list();
+      console.table(intents);
+    } catch (error) {
+      console.error("Failed to list intents:", getErrorMessage(error));
+      process.exit(1);
+    }
+  });
+
 async function main() {
   try {
     await program.parseAsync(process.argv);
