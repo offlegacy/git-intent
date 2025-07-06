@@ -10,8 +10,8 @@
   },
   "scripts": {
     "build": "tsup",
-    "start": "node dist/cli.js",
-    "dev": "tsx src/cli.ts",
+    "start:cli": "node dist/cli.js",
+    "cli": "tsx src/cli.ts",
     "tui": "tsx src/main.tsx",
     "format": "biome format",
     "format:fix": "biome format --write",

@@ -1,7 +1,9 @@
 import { Command } from "commander";
 
 import * as commands from "./core/commands";
-import type { IntentStatus } from "./core/constants";
+import { ensureBranch } from "./core/utils/branch";
+import { getErrorMessage } from "./core/utils/error";
+import { ensureProject } from "./core/utils/project";
 
 const program = new Command();
 
@@ -10,49 +12,30 @@ program
   .description("Git workflow tool designed for creating intentional commits.")
   .version("0.0.1");
 
-const getErrorMessage = (error: unknown): string => {
-  if (error instanceof Error) return error.message;
-  return String(error);
-};
-
 program
-  .command("add")
-  .description("Add a new intent")
+  .command("start")
+  .description("Start a new intent")
   .argument("<message>", "Intent message")
-  .option("-s, --status <status>", "Initial status", "created")
-  .action((message: string, options: { status: IntentStatus }) => {
+  .action((message: string) => {
     try {
-      const rowid = commands.add(message, options.status);
-      console.log(`Added intent #${rowid}: ${message} [${options.status}]`);
+      const projectId = ensureProject();
+      const branchId = ensureBranch(projectId);
+
+      const rowid = commands.start({ message, branchId });
+      console.log(`Started intent #${rowid}: ${message}`);
     } catch (error) {
-      console.error("Failed to add intent:", getErrorMessage(error));
+      console.error("Failed to start intent:", getErrorMessage(error));
       process.exit(1);
     }
   });
 
 program
   .command("list")
-  .alias("ls")
   .description("List all intents")
-  .option("-s, --status <status>", "Filter by status")
-  .action((options: { status?: IntentStatus }) => {
+  .action(() => {
     try {
-      const intentList = commands.list(options.status);
-
-      if (intentList.length === 0) {
-        console.log("No intents found.");
-        return;
-      }
-
-      console.log(`\nFound ${intentList.length} intent(s):\n`);
-
-      intentList.forEach((intent) => {
-        console.log(`#${intent.id} ${intent.message}`);
-        console.log(
-          `   Status: ${intent.status} | Created: ${new Date(intent.createdAt).toLocaleString()}`,
-        );
-        console.log("");
-      });
+      const intents = commands.list();
+      console.table(intents);
     } catch (error) {
       console.error("Failed to list intents:", getErrorMessage(error));
       process.exit(1);

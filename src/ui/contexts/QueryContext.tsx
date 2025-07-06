@@ -1,6 +1,8 @@
 import { createContext, type ReactNode, useContext, useState } from "react";
 import * as commands from "../../core/commands";
 import type { Intent } from "../../core/db/schema";
+import { ensureBranch } from "../../core/utils/branch";
+import { ensureProject } from "../../core/utils/project";
 
 type QueryContextType = {
   query: string;
@@ -34,7 +36,9 @@ export const QueryProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
 
-    commands.add(query, "in_progress");
+    const projectId = ensureProject();
+    const branchId = ensureBranch(projectId);
+    commands.start({ message: query, branchId });
 
     setActiveIntentList(getActiveIntent());
     setQuery("");
