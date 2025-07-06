@@ -1,13 +1,13 @@
 import { Box, Text, useFocus } from "ink";
 
-import * as commands from "../core/commands";
+import { useQuery } from "./contexts/QueryContext";
 import { TitledBox } from "./Title";
 
 export const ActiveIntentBox = () => {
   const { isFocused } = useFocus();
-  const activeList = commands.list("in_progress");
+  const { activeIntentList } = useQuery();
 
-  if (!Array.isArray(activeList) || activeList.length === 0) {
+  if (!Array.isArray(activeIntentList) || activeIntentList.length === 0) {
     return (
       <Box paddingLeft={1} borderStyle="round" flexDirection="column">
         <Text>No active intent found.</Text>
@@ -15,18 +15,20 @@ export const ActiveIntentBox = () => {
     );
   }
 
-  if (activeList.length > 1) {
+  if (activeIntentList.length > 1) {
     return (
       <Box paddingLeft={1} borderStyle="round" flexDirection="column">
         <Text color="yellow">
           Warning: Multiple active intents found. Showing first one.
         </Text>
-        <Text>{activeList[0]?.message || "Intent message unavailable"}</Text>
+        <Text>
+          {activeIntentList[0]?.message || "Intent message unavailable"}
+        </Text>
       </Box>
     );
   }
 
-  const intent = activeList[0];
+  const intent = activeIntentList[0];
 
   if (!intent) {
     throw new Error(

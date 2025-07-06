@@ -1,6 +1,6 @@
 import { Spacer, useApp, useInput } from "ink";
 import { ActiveIntentBox } from "./ActiveIntentBox";
-import { CommandProvider } from "./CommandContext";
+import { QueryProvider } from "./contexts/QueryContext";
 import { Help } from "./Help";
 import { InputBox } from "./InputBox";
 import { MainLayout } from "./MainLayout";
@@ -15,7 +15,7 @@ export const App = () => {
   });
 
   return (
-    <CommandProvider>
+    <QueryProvider>
       <MainLayout>
         <ActiveIntentBox />
         <Spacer />
@@ -23,6 +23,6 @@ export const App = () => {
         <Help />
         <Spacer />
       </MainLayout>
-    </CommandProvider>
+    </QueryProvider>
   );
 };
