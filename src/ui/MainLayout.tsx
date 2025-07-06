@@ -6,7 +6,7 @@ interface MainLayoutProps {
 
 export const MainLayout = ({ children }: MainLayoutProps) => {
   return (
-    <Box flexGrow={1} paddingLeft={1} flexDirection="column">
+    <Box flexGrow={1} paddingX={1} marginRight={30} flexDirection="column">
       {children}
     </Box>
   );

@@ -37,7 +37,6 @@ export const ActiveIntentBox = () => {
   return (
     <Box
       paddingLeft={1}
-      marginRight={1}
       borderStyle="round"
       borderColor={isFocused ? "green" : "white"}
       flexDirection="column"

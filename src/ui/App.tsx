@@ -4,7 +4,6 @@ import { CommandProvider } from "./CommandContext";
 import { Help } from "./Help";
 import { InputBox } from "./InputBox";
 import { MainLayout } from "./MainLayout";
-import { PlannedIntentsBox } from "./PlannedIntentsBox";
 
 export const App = () => {
   const { exit } = useApp();
@@ -19,10 +18,10 @@ export const App = () => {
     <CommandProvider>
       <MainLayout>
         <ActiveIntentBox />
-        <PlannedIntentsBox />
         <Spacer />
         <InputBox />
         <Help />
+        <Spacer />
       </MainLayout>
     </CommandProvider>
   );
