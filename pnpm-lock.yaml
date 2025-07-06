@@ -17,9 +17,6 @@ importers:
       drizzle-orm:
         specifier: ^0.44.2
         version: 0.44.2(@types/better-sqlite3@7.6.13)(better-sqlite3@12.2.0)
-      fullscreen-ink:
-        specifier: ^0.0.2
-        version: 0.0.2(@types/react@19.1.8)
       ink:
         specifier: 5.2.1
         version: 5.2.1(@types/react@19.1.8)(react@18.3.1)
@@ -866,9 +863,6 @@ packages:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
-
-  fullscreen-ink@0.0.2:
-    resolution: {integrity: sha512-5AiV01q8EfOvG2BrYlmNQtUxDSEBf4p8EN+3R0GRvdDKSh2sphUE+7UKTMMq4qMWq1XuhcJB7TGR8O+UD5VyQw==}
 
   get-east-asian-width@1.3.0:
     resolution: {integrity: sha512-vpeMIQKxczTD/0s2CdEWHcb0eeJe6TFjxb+J5xgX7hScxqrGuyjmv4c1D4A/gelKfyox0gJJwIHF+fLjeaM8kQ==}
@@ -1864,16 +1858,6 @@ snapshots:
 
   fsevents@2.3.3:
     optional: true
-
-  fullscreen-ink@0.0.2(@types/react@19.1.8):
-    dependencies:
-      ink: 5.2.1(@types/react@19.1.8)(react@18.3.1)
-      react: 18.3.1
-    transitivePeerDependencies:
-      - '@types/react'
-      - bufferutil
-      - react-devtools-core
-      - utf-8-validate
 
   get-east-asian-width@1.3.0: {}
 
