@@ -1,6 +1,7 @@
 import { Box, Text, useFocus } from "ink";
 
 import * as commands from "../core/commands";
+import { TitledBox } from "./Title";
 
 export const ActiveIntentBox = () => {
   const { isFocused } = useFocus();
@@ -41,12 +42,9 @@ export const ActiveIntentBox = () => {
       borderColor={isFocused ? "green" : "white"}
       flexDirection="column"
     >
-      <Box marginTop={-1}>
-        <Text> Active </Text>
-      </Box>
-      <Box>
+      <TitledBox title="Active Intent">
         <Text>{`${intent.message}`}</Text>
-      </Box>
+      </TitledBox>
     </Box>
   );
 };
