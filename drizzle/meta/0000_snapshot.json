@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "5f16745f-b3c0-44dc-b385-3dd2d6004bba",
+  "id": "e47f2606-6bb2-4c81-a5fd-88be408a3905",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "branches": {
@@ -34,7 +34,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "(strftime('%s','now'))"
+          "default": "(strftime('%s','now') * 1000)"
         },
         "updated_at": {
           "name": "updated_at",
@@ -42,7 +42,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "(strftime('%s','now'))"
+          "default": "(strftime('%s','now') * 1000)"
         }
       },
       "indexes": {},
@@ -102,7 +102,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "(strftime('%s','now'))"
+          "default": "(strftime('%s','now') * 1000)"
         },
         "updated_at": {
           "name": "updated_at",
@@ -110,7 +110,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "(strftime('%s','now'))"
+          "default": "(strftime('%s','now') * 1000)"
         }
       },
       "indexes": {},
@@ -163,7 +163,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "(strftime('%s','now'))"
+          "default": "(strftime('%s','now') * 1000)"
         },
         "updated_at": {
           "name": "updated_at",
@@ -171,7 +171,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "(strftime('%s','now'))"
+          "default": "(strftime('%s','now') * 1000)"
         }
       },
       "indexes": {

@@ -6,12 +6,12 @@ export const projects = sqliteTable("projects", {
   id: text("id").primaryKey(),
   repoPath: text("repo_path").notNull().unique(),
   repoName: text("repo_name").notNull(),
-  createdAt: integer("created_at", { mode: "timestamp" })
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
     .notNull()
-    .default(sql`(strftime('%s','now'))`),
-  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .default(sql`(strftime('%s','now') * 1000)`),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
     .notNull()
-    .default(sql`(strftime('%s','now'))`),
+    .default(sql`(strftime('%s','now') * 1000)`),
 });
 
 export const branches = sqliteTable("branches", {
@@ -20,12 +20,12 @@ export const branches = sqliteTable("branches", {
     .notNull()
     .references(() => projects.id),
   name: text("name").notNull(),
-  createdAt: integer("created_at", { mode: "timestamp" })
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
     .notNull()
-    .default(sql`(strftime('%s','now'))`),
-  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .default(sql`(strftime('%s','now') * 1000)`),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
     .notNull()
-    .default(sql`(strftime('%s','now'))`),
+    .default(sql`(strftime('%s','now') * 1000)`),
 });
 
 export const intents = sqliteTable("intents", {
@@ -33,12 +33,12 @@ export const intents = sqliteTable("intents", {
   message: text("message").notNull(),
   status: text("status", { enum: INTENT_STATUS }).notNull(),
   branchId: text("branch_id").references(() => branches.id),
-  createdAt: integer("created_at", { mode: "timestamp" })
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
     .notNull()
-    .default(sql`(strftime('%s','now'))`),
-  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .default(sql`(strftime('%s','now') * 1000)`),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
     .notNull()
-    .default(sql`(strftime('%s','now'))`),
+    .default(sql`(strftime('%s','now') * 1000)`),
 });
 
 export type Project = typeof projects.$inferSelect;
