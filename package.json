@@ -12,8 +12,11 @@
     "build": "tsup",
     "start": "node dist/cli.js",
     "dev": "tsx src/cli.ts",
+    "tui": "tsx src/main.tsx",
     "format": "biome format",
     "format:fix": "biome format --write",
+    "check": "biome check",
+    "check:fix": "biome check --write",
     "db:check": "drizzle-kit check",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
@@ -23,12 +26,16 @@
   "dependencies": {
     "better-sqlite3": "^12.2.0",
     "commander": "^14.0.0",
-    "drizzle-orm": "^0.44.2"
+    "drizzle-orm": "^0.44.2",
+    "ink": "5.2.1",
+    "ink-text-input": "^6.0.0",
+    "react": "^18.3.1"
   },
   "devDependencies": {
     "@biomejs/biome": "2.0.6",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^24.0.7",
+    "@types/react": "^19.1.8",
     "dotenv": "^17.0.0",
     "drizzle-kit": "^0.31.4",
     "tsup": "^8.5.0",
