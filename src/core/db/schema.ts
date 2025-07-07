@@ -11,10 +11,6 @@ export const projects = sqliteTable("projects", {
   createdAt: integer("created_at", { mode: "timestamp_ms" })
     .notNull()
     .default(nowMs),
-  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
-    .notNull()
-    .default(nowMs)
-    .$onUpdate(() => nowMs),
 });
 
 export const branches = sqliteTable("branches", {
@@ -26,10 +22,6 @@ export const branches = sqliteTable("branches", {
   createdAt: integer("created_at", { mode: "timestamp_ms" })
     .notNull()
     .default(nowMs),
-  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
-    .notNull()
-    .default(nowMs)
-    .$onUpdate(() => nowMs),
 });
 
 export const intents = sqliteTable("intents", {
@@ -40,10 +32,6 @@ export const intents = sqliteTable("intents", {
   createdAt: integer("created_at", { mode: "timestamp_ms" })
     .notNull()
     .default(nowMs),
-  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
-    .notNull()
-    .default(nowMs)
-    .$onUpdate(() => nowMs),
 });
 
 export type Project = typeof projects.$inferSelect;

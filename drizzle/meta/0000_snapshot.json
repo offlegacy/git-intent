@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "e47f2606-6bb2-4c81-a5fd-88be408a3905",
+  "id": "17f4b149-4d49-4bf4-9144-4343ca84f92c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "branches": {
@@ -30,14 +30,6 @@
         },
         "created_at": {
           "name": "created_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "(strftime('%s','now') * 1000)"
-        },
-        "updated_at": {
-          "name": "updated_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
@@ -103,14 +95,6 @@
           "notNull": true,
           "autoincrement": false,
           "default": "(strftime('%s','now') * 1000)"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "(strftime('%s','now') * 1000)"
         }
       },
       "indexes": {},
@@ -159,14 +143,6 @@
         },
         "created_at": {
           "name": "created_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "(strftime('%s','now') * 1000)"
-        },
-        "updated_at": {
-          "name": "updated_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
