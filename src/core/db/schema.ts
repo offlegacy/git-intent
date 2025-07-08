@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
 import { INTENT_STATUS } from "../constants";
 
 const nowMs = sql`(strftime('%s','now') * 1000)`;
@@ -13,16 +13,20 @@ export const projects = sqliteTable("projects", {
     .default(nowMs),
 });
 
-export const branches = sqliteTable("branches", {
-  id: text("id").primaryKey(),
-  projectId: text("project_id")
-    .notNull()
-    .references(() => projects.id),
-  name: text("name").notNull(),
-  createdAt: integer("created_at", { mode: "timestamp_ms" })
-    .notNull()
-    .default(nowMs),
-});
+export const branches = sqliteTable(
+  "branches",
+  {
+    id: text("id").primaryKey(),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => projects.id),
+    name: text("name").notNull(),
+    createdAt: integer("created_at", { mode: "timestamp_ms" })
+      .notNull()
+      .default(nowMs),
+  },
+  (table) => [unique("unq_branch_project").on(table.name, table.projectId)],
+);
 
 export const intents = sqliteTable("intents", {
   id: integer("id").primaryKey({ autoIncrement: true }),
