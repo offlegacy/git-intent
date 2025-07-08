@@ -22,7 +22,7 @@ export const useQuery = () => {
 };
 
 const getActiveIntent = () => {
-  const activeIntentArray = commands.list("in_progress");
+  const activeIntentArray = commands.list("active");
   return Array.isArray(activeIntentArray) ? activeIntentArray : [];
 };
 
