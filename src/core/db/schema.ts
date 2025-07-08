@@ -19,7 +19,7 @@ export const branches = sqliteTable(
     id: text("id").primaryKey(),
     projectId: text("project_id")
       .notNull()
-      .references(() => projects.id),
+      .references(() => projects.id, { onDelete: "cascade" }),
     name: text("name").notNull(),
     createdAt: integer("created_at", { mode: "timestamp_ms" })
       .notNull()
