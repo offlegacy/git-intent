@@ -27,7 +27,7 @@ describe("GitService", () => {
 
       const service = createGitService({ gitProvider: mockGitFactory });
 
-      await expect(service.commit("test message")).rejects.instanceOf(
+      await expect(service.getProjectMetadata()).rejects.instanceOf(
         IsNotGitRepositoryError,
       );
     });
