@@ -1,19 +1,49 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   EmptyCommitMessageError,
   GitError,
   IsNotGitRepositoryError,
 } from "./errors";
-import { createGitService } from "./gitManager";
+import { __testing__, createGitService } from "./gitManager";
+
+function createMockGit(overrides = {}) {
+  return {
+    checkIsRepo: vi.fn().mockResolvedValue(true),
+    commit: vi.fn().mockResolvedValue({ commit: "abc123" }),
+    revparse: vi.fn().mockResolvedValue("abc123"),
+    branchLocal: vi.fn().mockResolvedValue({
+      detached: false,
+      current: "main",
+    }),
+    ...overrides,
+  };
+}
 
 describe("GitService", () => {
+  beforeEach(() => {
+    __testing__.clearGlobalCache();
+  });
+
+  it("should cache git instances efficiently", () => {
+    const mockGit = createMockGit();
+    const mockFactory = vi.fn().mockReturnValue(mockGit);
+
+    expect(__testing__.getGlobalCacheSize()).toBe(0);
+
+    const service1 = createGitService({ gitProvider: mockFactory });
+    const service2 = createGitService({ gitProvider: mockFactory });
+
+    service1.commit("abc123");
+    service2.commit("abc123");
+
+    expect(__testing__.getGlobalCacheSize()).toBe(1);
+  });
+
   describe("getProjectMetadata", () => {
     it("should handle git command failures", async () => {
-      const mockGit = {
-        checkIsRepo: vi.fn().mockResolvedValue(true),
+      const mockGitFactory = vi.fn().mockReturnValue({
         revparse: vi.fn().mockRejectedValue(new Error("Git command failed")),
-      };
-      const mockGitFactory = vi.fn().mockReturnValue(mockGit);
+      });
       const service = createGitService({ gitProvider: mockGitFactory });
 
       await expect(service.getProjectMetadata()).rejects.toThrow(GitError);
@@ -35,12 +65,11 @@ describe("GitService", () => {
 
   describe("getBranchMetadata", () => {
     it("should handle detached HEAD state", async () => {
-      const mockGit = {
-        checkIsRepo: vi.fn().mockResolvedValue(true),
+      const mockGit = createMockGit({
         branchLocal: vi.fn().mockResolvedValue({
           detached: true,
         }),
-      };
+      });
       const mockGitFactory = vi.fn().mockReturnValue(mockGit);
       const service = createGitService({ gitProvider: mockGitFactory });
 
@@ -50,9 +79,9 @@ describe("GitService", () => {
     });
 
     it("should only work inside a git repo", async () => {
-      const mockGit = {
+      const mockGit = createMockGit({
         checkIsRepo: vi.fn().mockReturnValue(false),
-      };
+      });
       const mockGitFactory = vi.fn().mockReturnValue(mockGit);
 
       const service = createGitService({ gitProvider: mockGitFactory });
@@ -63,15 +92,9 @@ describe("GitService", () => {
     });
 
     it("should handle git command failures", async () => {
-      const mockGit = {
-        checkIsRepo: vi.fn().mockResolvedValue(true),
-        branchLocal: vi.fn().mockResolvedValue({
-          detached: false,
-          current: "main",
-        }),
+      const mockGit = createMockGit({
         revparse: vi.fn().mockRejectedValue(new Error("Git command failed")),
-      };
-
+      });
       const mockGitFactory = vi.fn().mockReturnValue(mockGit);
       const service = createGitService({ gitProvider: mockGitFactory });
 
@@ -83,12 +106,8 @@ describe("GitService", () => {
 
   describe("commit", () => {
     it("should handle commit success", async () => {
-      const mockCommitResult = { commit: "abc123" };
+      const mockGit = createMockGit();
 
-      const mockGit = {
-        commit: vi.fn().mockResolvedValue(mockCommitResult),
-        checkIsRepo: vi.fn().mockResolvedValue(true),
-      };
       const mockGitFactory = vi.fn().mockReturnValue(mockGit);
 
       const service = createGitService({ gitProvider: mockGitFactory });
@@ -99,9 +118,9 @@ describe("GitService", () => {
     });
 
     it("should not allow commit outside of git repo", async () => {
-      const mockGit = {
+      const mockGit = createMockGit({
         checkIsRepo: vi.fn().mockReturnValue(false),
-      };
+      });
       const mockGitFactory = vi.fn().mockReturnValue(mockGit);
 
       const service = createGitService({ gitProvider: mockGitFactory });

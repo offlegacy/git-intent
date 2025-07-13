@@ -14,13 +14,14 @@ interface GitServiceConfig {
   gitOptions?: Partial<SimpleGitOptions>;
 }
 
+const gitInstances = new Map<string, SimpleGit>();
+
 export function createGitService(config: GitServiceConfig = {}) {
   const {
     gitProvider: gitFactory = simpleGit,
     repoPath = process.cwd(),
     gitOptions = { trimmed: true },
   } = config;
-  const gitInstances = new Map<string, SimpleGit>();
 
   function getGitInstance(): SimpleGit {
     const normalizedPath = path.resolve(repoPath);
@@ -139,3 +140,8 @@ export function createGitService(config: GitServiceConfig = {}) {
     getProjectMetadata,
   };
 }
+
+export const __testing__ = {
+  clearGlobalCache: () => gitInstances.clear(),
+  getGlobalCacheSize: () => gitInstances.size,
+};
