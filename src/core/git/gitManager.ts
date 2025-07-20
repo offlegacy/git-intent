@@ -25,13 +25,14 @@ export function createGitService(config: GitServiceConfig = {}) {
 
   function getGitInstance(): SimpleGit {
     const normalizedPath = path.resolve(repoPath);
+    let instance = gitInstances.get(normalizedPath);
 
-    if (!gitInstances.has(normalizedPath)) {
-      const newGitInstance = gitFactory(normalizedPath, gitOptions);
-      gitInstances.set(normalizedPath, newGitInstance);
+    if (!instance) {
+      instance = gitFactory(normalizedPath, gitOptions);
+      gitInstances.set(normalizedPath, instance);
     }
 
-    return gitInstances.get(normalizedPath)!;
+    return instance;
   }
 
   async function checkIsRepo(): Promise<boolean> {
