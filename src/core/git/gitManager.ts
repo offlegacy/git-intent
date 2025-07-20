@@ -35,12 +35,21 @@ export function createGitService(config: GitServiceConfig = {}) {
     return instance;
   }
 
-  async function checkIsRepo(): Promise<boolean> {
+  async function checkIsRepo(): Promise<void> {
     try {
       const git = getGitInstance();
-      const isRepo = await git.checkIsRepo();
-      return isRepo;
+      const isGitRepo = await git.checkIsRepo();
+
+      if (!isGitRepo) {
+        throw new IsNotGitRepositoryError(
+          "Current directory is not a git repository",
+        );
+      }
     } catch (error) {
+      if (error instanceof IsNotGitRepositoryError) {
+        throw error;
+      }
+
       throw new GitError(
         `Failed to check if directory is a Git repository: ${getErrorMessage(error)}`,
       );
@@ -49,13 +58,7 @@ export function createGitService(config: GitServiceConfig = {}) {
 
   async function getProjectMetadata(): Promise<NewProject> {
     const git = getGitInstance();
-
-    const isGitRepo = await checkIsRepo();
-    if (!isGitRepo) {
-      throw new IsNotGitRepositoryError(
-        "Current directory is not a git repository",
-      );
-    }
+    await checkIsRepo();
 
     try {
       const repoPath = await git.revparse(["--show-toplevel"]);
@@ -75,13 +78,7 @@ export function createGitService(config: GitServiceConfig = {}) {
 
   async function getBranchMetadata(projectId: string): Promise<NewBranch> {
     const git = getGitInstance();
-
-    const isGitRepo = await checkIsRepo();
-    if (!isGitRepo) {
-      throw new IsNotGitRepositoryError(
-        "Current directory is not a git repository",
-      );
-    }
+    await checkIsRepo();
 
     try {
       const branchSummary = await git.branchLocal();
@@ -113,13 +110,7 @@ export function createGitService(config: GitServiceConfig = {}) {
 
   async function commit(message: string): Promise<string> {
     const git = getGitInstance();
-
-    const isGitRepo = await checkIsRepo();
-    if (!isGitRepo) {
-      throw new IsNotGitRepositoryError(
-        "Current directory is not a git repository",
-      );
-    }
+    await checkIsRepo();
 
     const trimmedMessage = message.trim();
     if (!trimmedMessage) {

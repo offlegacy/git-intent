@@ -51,7 +51,7 @@ describe("GitService", () => {
 
     it("should only work inside a git repo", async () => {
       const mockGit = {
-        checkIsRepo: vi.fn().mockReturnValue(false),
+        checkIsRepo: vi.fn().mockResolvedValue(false),
       };
       const mockGitFactory = vi.fn().mockReturnValue(mockGit);
 
@@ -80,7 +80,7 @@ describe("GitService", () => {
 
     it("should only work inside a git repo", async () => {
       const mockGit = createMockGit({
-        checkIsRepo: vi.fn().mockReturnValue(false),
+        checkIsRepo: vi.fn().mockResolvedValue(false),
       });
       const mockGitFactory = vi.fn().mockReturnValue(mockGit);
 
@@ -119,7 +119,7 @@ describe("GitService", () => {
 
     it("should not allow commit outside of git repo", async () => {
       const mockGit = createMockGit({
-        checkIsRepo: vi.fn().mockReturnValue(false),
+        checkIsRepo: vi.fn().mockResolvedValue(false),
       });
       const mockGitFactory = vi.fn().mockReturnValue(mockGit);
 
