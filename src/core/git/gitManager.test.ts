@@ -4,7 +4,7 @@ import {
   GitError,
   IsNotGitRepositoryError,
 } from "./errors";
-import { __testing__, createGitService } from "./gitManager";
+import { __testing__, getGitService } from "./gitManager";
 
 function createMockGit(overrides = {}) {
   return {
@@ -30,8 +30,8 @@ describe("GitService", () => {
 
     expect(__testing__.getGlobalCacheSize()).toBe(0);
 
-    const service1 = createGitService({ gitProvider: mockFactory });
-    const service2 = createGitService({ gitProvider: mockFactory });
+    const service1 = getGitService({ gitProvider: mockFactory });
+    const service2 = getGitService({ gitProvider: mockFactory });
 
     service1.commit("abc123");
     service2.commit("abc123");
@@ -44,7 +44,7 @@ describe("GitService", () => {
       const mockGitFactory = vi.fn().mockReturnValue({
         revparse: vi.fn().mockRejectedValue(new Error("Git command failed")),
       });
-      const service = createGitService({ gitProvider: mockGitFactory });
+      const service = getGitService({ gitProvider: mockGitFactory });
 
       await expect(service.getProjectMetadata()).rejects.toThrow(GitError);
     });
@@ -55,7 +55,7 @@ describe("GitService", () => {
       };
       const mockGitFactory = vi.fn().mockReturnValue(mockGit);
 
-      const service = createGitService({ gitProvider: mockGitFactory });
+      const service = getGitService({ gitProvider: mockGitFactory });
 
       await expect(service.getProjectMetadata()).rejects.instanceOf(
         IsNotGitRepositoryError,
@@ -71,7 +71,7 @@ describe("GitService", () => {
         }),
       });
       const mockGitFactory = vi.fn().mockReturnValue(mockGit);
-      const service = createGitService({ gitProvider: mockGitFactory });
+      const service = getGitService({ gitProvider: mockGitFactory });
 
       await expect(service.getBranchMetadata("project-id")).rejects.toThrow(
         "Cannot determine branch name in detached HEAD state",
@@ -84,7 +84,7 @@ describe("GitService", () => {
       });
       const mockGitFactory = vi.fn().mockReturnValue(mockGit);
 
-      const service = createGitService({ gitProvider: mockGitFactory });
+      const service = getGitService({ gitProvider: mockGitFactory });
 
       await expect(service.getBranchMetadata("project-id")).rejects.toThrow(
         IsNotGitRepositoryError,
@@ -96,7 +96,7 @@ describe("GitService", () => {
         revparse: vi.fn().mockRejectedValue(new Error("Git command failed")),
       });
       const mockGitFactory = vi.fn().mockReturnValue(mockGit);
-      const service = createGitService({ gitProvider: mockGitFactory });
+      const service = getGitService({ gitProvider: mockGitFactory });
 
       await expect(service.getBranchMetadata("project-id")).rejects.toThrow(
         GitError,
@@ -110,7 +110,7 @@ describe("GitService", () => {
 
       const mockGitFactory = vi.fn().mockReturnValue(mockGit);
 
-      const service = createGitService({ gitProvider: mockGitFactory });
+      const service = getGitService({ gitProvider: mockGitFactory });
       const result = await service.commit("test message");
 
       expect(result).toBe("abc123");
@@ -123,7 +123,7 @@ describe("GitService", () => {
       });
       const mockGitFactory = vi.fn().mockReturnValue(mockGit);
 
-      const service = createGitService({ gitProvider: mockGitFactory });
+      const service = getGitService({ gitProvider: mockGitFactory });
 
       await expect(service.commit("test message")).rejects.instanceOf(
         IsNotGitRepositoryError,
@@ -131,7 +131,7 @@ describe("GitService", () => {
     });
 
     it("should not allow commit without message", async () => {
-      const service = createGitService();
+      const service = getGitService();
 
       await expect(service.commit("")).rejects.instanceOf(
         EmptyCommitMessageError,

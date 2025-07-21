@@ -16,7 +16,11 @@ interface GitServiceConfig {
 
 const gitInstances = new Map<string, SimpleGit>();
 
-export function createGitService(config: GitServiceConfig = {}) {
+/**
+ * Creates a git service with internal instance caching.
+ * Multiple calls with the same repoPath will reuse git instances.
+ */
+export function getGitService(config: GitServiceConfig = {}) {
   const {
     gitProvider: gitFactory = simpleGit,
     repoPath = process.cwd(),
