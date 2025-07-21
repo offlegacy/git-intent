@@ -16,10 +16,10 @@ program
   .command("start")
   .description("Start a new intent")
   .argument("<message>", "Intent message")
-  .action((message: string) => {
+  .action(async (message: string) => {
     try {
-      const projectId = ensureProject();
-      const branchId = ensureBranch(projectId);
+      const projectId = await ensureProject();
+      const branchId = await ensureBranch(projectId);
 
       const rowid = commands.start({ message, branchId });
       console.log(`Started intent #${rowid}: ${message}`);

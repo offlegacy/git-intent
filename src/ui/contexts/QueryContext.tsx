@@ -31,13 +31,13 @@ export const QueryProvider = ({ children }: { children: ReactNode }) => {
 
   const [activeIntentList, setActiveIntentList] = useState(getActiveIntent);
 
-  const submitQuery = () => {
+  const submitQuery = async () => {
     if (query.trim() === "") {
       return;
     }
 
-    const projectId = ensureProject();
-    const branchId = ensureBranch(projectId);
+    const projectId = await ensureProject();
+    const branchId = await ensureBranch(projectId);
     commands.start({ message: query, branchId });
 
     setActiveIntentList(getActiveIntent());

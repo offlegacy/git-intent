@@ -1,9 +1,10 @@
 import { branches } from "../db/schema";
+import { getGitService } from "../git/gitManager";
 import { ensureEntity } from "./db-helpers";
-import { getBranchMetadata } from "./git";
 
-export function ensureBranch(projectId: string) {
-  const branchMeta = getBranchMetadata(projectId);
+export async function ensureBranch(projectId: string) {
+  const { getBranchMetadata } = getGitService();
+  const branchMeta = await getBranchMetadata(projectId);
 
   return ensureEntity({
     table: branches,

@@ -21,7 +21,8 @@
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "test": "vitest"
   },
   "dependencies": {
     "better-sqlite3": "^12.2.0",
@@ -29,7 +30,8 @@
     "drizzle-orm": "^0.44.2",
     "ink": "5.2.1",
     "ink-text-input": "^6.0.0",
-    "react": "^18.3.1"
+    "react": "^18.3.1",
+    "simple-git": "^3.28.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.0.6",
@@ -40,7 +42,8 @@
     "drizzle-kit": "^0.31.4",
     "tsup": "^8.5.0",
     "tsx": "^4.20.3",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^3.2.4"
   },
   "packageManager": "pnpm@9.15.5"
 }

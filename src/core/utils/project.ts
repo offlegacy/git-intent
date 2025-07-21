@@ -1,9 +1,10 @@
 import { projects } from "../db/schema";
+import { getGitService } from "../git/gitManager";
 import { ensureEntity } from "./db-helpers";
-import { getProjectMetadata } from "./git";
 
-export function ensureProject() {
-  const projectMeta = getProjectMetadata();
+export async function ensureProject() {
+  const { getProjectMetadata } = getGitService();
+  const projectMeta = await getProjectMetadata();
 
   return ensureEntity({
     table: projects,
