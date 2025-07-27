@@ -1,4 +1,10 @@
-import { createContext, type ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import * as commands from "../../core/commands";
 import type { Intent } from "../../core/db/schema";
 import { ensureBranch } from "../../core/utils/branch";
@@ -8,7 +14,8 @@ type QueryContextType = {
   query: string;
   setQuery: (query: string) => void;
   submitQuery: () => void;
-  activeIntentList: Intent[];
+  activeIntent: Intent | null;
+  error: string | null;
 };
 
 const QueryContext = createContext<QueryContextType | null>(null);
@@ -21,32 +28,53 @@ export const useQuery = () => {
   return context;
 };
 
-const getActiveIntent = () => {
-  const activeIntentArray = commands.list("active");
-  return Array.isArray(activeIntentArray) ? activeIntentArray : [];
-};
-
 export const QueryProvider = ({ children }: { children: ReactNode }) => {
   const [query, setQuery] = useState("");
+  const [activeIntent, setActiveIntent] = useState<Intent | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const [activeIntentList, setActiveIntentList] = useState(getActiveIntent);
+  useEffect(() => {
+    const loadActiveIntent = async () => {
+      try {
+        setError(null);
+        const projectId = ensureProject();
+        const branchId = ensureBranch(projectId);
+        const activeIntent = await commands.findActiveIntent({ branchId });
+        setActiveIntent(activeIntent || null);
+      } catch (error) {
+        console.error("Failed to load active intent:", error);
+        setError("Failed to load active intent");
+        setActiveIntent(null);
+      }
+    };
+
+    loadActiveIntent();
+  }, []);
 
   const submitQuery = async () => {
     if (query.trim() === "") {
       return;
     }
 
-    const projectId = await ensureProject();
-    const branchId = await ensureBranch(projectId);
-    await commands.start({ message: query, branchId });
-
-    setActiveIntentList(getActiveIntent());
-    setQuery("");
+    try {
+      setError(null);
+      const projectId = await ensureProject();
+      const branchId = await ensureBranch(projectId);
+      const newActiveIntent = await commands.start({
+        message: query,
+        branchId,
+      });
+      setActiveIntent(newActiveIntent);
+      setQuery("");
+    } catch (error) {
+      console.error("Failed to create intent:", error);
+      setError("Failed to create intent. Please try again.");
+    }
   };
 
   return (
     <QueryContext.Provider
-      value={{ query, setQuery, submitQuery, activeIntentList }}
+      value={{ query, setQuery, submitQuery, activeIntent, error }}
     >
       {children}
     </QueryContext.Provider>
