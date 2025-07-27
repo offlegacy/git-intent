@@ -37,8 +37,8 @@ export const QueryProvider = ({ children }: { children: ReactNode }) => {
     const loadActiveIntent = async () => {
       try {
         setError(null);
-        const projectId = ensureProject();
-        const branchId = ensureBranch(projectId);
+        const projectId = await ensureProject();
+        const branchId = await ensureBranch(projectId);
         const activeIntent = await commands.findActiveIntent({ branchId });
         setActiveIntent(activeIntent || null);
       } catch (error) {
