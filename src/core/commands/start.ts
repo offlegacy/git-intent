@@ -1,21 +1,42 @@
+import { eq } from "drizzle-orm";
 import { db } from "../db";
-import { intents } from "../db/schema";
+import { type Intent, intents } from "../db/schema";
+import { findActiveIntent } from "./findActiveIntent";
 
-export function start({
+export async function start({
   message,
   branchId,
 }: {
   message: string;
   branchId: string;
-}) {
-  const result = db
-    .insert(intents)
-    .values({
-      message,
-      status: "active",
-      branchId,
-    })
-    .run();
+}): Promise<Intent> {
+  try {
+    const activeIntent = await findActiveIntent({ branchId });
 
-  return Number(result.lastInsertRowid);
+    return db.transaction((tx) => {
+      if (activeIntent) {
+        db.update(intents)
+          .set({
+            status: "cancelled",
+          })
+          .where(eq(intents.id, activeIntent.id))
+          .run();
+      }
+
+      return tx
+        .insert(intents)
+        .values({
+          message,
+          status: "active",
+          branchId,
+        })
+        .returning()
+        .get();
+    });
+  } catch (error) {
+    console.error("Failed to add new intent: ", error);
+    throw new Error(
+      `Failed to create intent: ${error instanceof Error ? error.message : "Unknown error"}`,
+    );
+  }
 }
