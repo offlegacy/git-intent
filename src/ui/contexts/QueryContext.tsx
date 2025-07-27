@@ -38,7 +38,7 @@ export const QueryProvider = ({ children }: { children: ReactNode }) => {
 
     const projectId = await ensureProject();
     const branchId = await ensureBranch(projectId);
-    commands.start({ message: query, branchId });
+    await commands.start({ message: query, branchId });
 
     setActiveIntentList(getActiveIntent());
     setQuery("");
