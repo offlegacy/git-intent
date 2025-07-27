@@ -17,7 +17,7 @@ export async function start({
       if (activeIntent) {
         db.update(intents)
           .set({
-            status: "completed",
+            status: "cancelled",
           })
           .where(eq(intents.id, activeIntent.id))
           .run();
