@@ -15,7 +15,7 @@ export async function start({
 
     return db.transaction((tx) => {
       if (activeIntent) {
-        db.update(intents)
+        tx.update(intents)
           .set({
             status: "cancelled",
           })
