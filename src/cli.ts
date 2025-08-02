@@ -42,6 +42,22 @@ program
     }
   });
 
+program
+  .command("finish")
+  .description("Finish the current active intent")
+  .action(async () => {
+    try {
+      const projectId = await ensureProject();
+      const branchId = await ensureBranch(projectId);
+
+      await commands.finish({ branchId });
+      console.log("Intent finished successfully");
+    } catch (error) {
+      console.error("Failed to finish intent:", getErrorMessage(error));
+      process.exit(1);
+    }
+  });
+
 async function main() {
   try {
     await program.parseAsync(process.argv);
