@@ -42,6 +42,22 @@ program
     }
   });
 
+program
+  .command("cancel")
+  .description("Cancel the active intent")
+  .action(async () => {
+    try {
+      const projectId = await ensureProject();
+      const branchId = await ensureBranch(projectId);
+
+      const intent = await commands.cancel({ branchId });
+      console.log(`Cancelled intent #${intent.id}: ${intent.message}`);
+    } catch (error) {
+      console.error("Failed to cancel intent:", getErrorMessage(error));
+      process.exit(1);
+    }
+  });
+
 async function main() {
   try {
     await program.parseAsync(process.argv);
