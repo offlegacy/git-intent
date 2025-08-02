@@ -21,8 +21,8 @@ program
       const projectId = await ensureProject();
       const branchId = await ensureBranch(projectId);
 
-      const rowid = commands.start({ message, branchId });
-      console.log(`Started intent #${rowid}: ${message}`);
+      const intent = await commands.start({ message, branchId });
+      console.log(`Started intent #${intent.id}: ${intent.message}`);
     } catch (error) {
       console.error("Failed to start intent:", getErrorMessage(error));
       process.exit(1);
@@ -38,6 +38,24 @@ program
       console.table(intents);
     } catch (error) {
       console.error("Failed to list intents:", getErrorMessage(error));
+      process.exit(1);
+    }
+  });
+
+program
+  .command("finish")
+  .description("Finish the current active intent")
+  .action(async () => {
+    try {
+      const projectId = await ensureProject();
+      const branchId = await ensureBranch(projectId);
+
+      const finishedIntent = await commands.finish({ branchId });
+      console.log(
+        `Finished intent #${finishedIntent.id}: "${finishedIntent.message}"`,
+      );
+    } catch (error) {
+      console.error("Failed to finish intent:", getErrorMessage(error));
       process.exit(1);
     }
   });
