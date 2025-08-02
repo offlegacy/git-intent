@@ -21,7 +21,7 @@ program
       const projectId = await ensureProject();
       const branchId = await ensureBranch(projectId);
 
-      const rowid = commands.start({ message, branchId });
+      const rowid = await commands.start({ message, branchId });
       console.log(`Started intent #${rowid}: ${message}`);
     } catch (error) {
       console.error("Failed to start intent:", getErrorMessage(error));
