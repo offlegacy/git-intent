@@ -51,7 +51,9 @@ program
       const branchId = await ensureBranch(projectId);
 
       const finishedIntent = await commands.finish({ branchId });
-      console.log(`Finished intent #${finishedIntent.id}: "${finishedIntent.message}"`);
+      console.log(
+        `Finished intent #${finishedIntent.id}: "${finishedIntent.message}"`,
+      );
     } catch (error) {
       console.error("Failed to finish intent:", getErrorMessage(error));
       process.exit(1);
