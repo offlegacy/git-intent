@@ -1,12 +1,12 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.1.3/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["!**/drizzle/**/*"],
+    "includes": ["**", "!**/drizzle/**/*"],
     "ignoreUnknown": false
   },
   "formatter": {
